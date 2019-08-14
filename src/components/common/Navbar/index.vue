@@ -79,8 +79,8 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 50px;
-  background-color: #dfdedf;
+  height: 46px;
+  background-color: #F0EFEF;
   padding: 0;
   margin: 0;
   font-size: 12px;
@@ -96,8 +96,9 @@ export default {
   cursor: pointer;
 }
 .icon {
-  width: 25px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
   margin: 0 auto;
 }
 .icon img {
@@ -105,6 +106,10 @@ export default {
   height: 100%;
 }
 .active {
-  color: red;
+  color: #C10000;
+}
+.text {
+  font-size: 8px;
+  font-family: Regular;
 }
 </style>

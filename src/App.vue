@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Search v-if = "showNavbar"/>
-    <router-view :style="{marginTop: showNavbar ? '80px' : '0'}"/>
+    <router-view  class="top-gap"/>
     <Navbar v-if = "showNavbar"></Navbar>
   </div>
 </template>
@@ -18,6 +18,9 @@ export default {
   },
   computed: {
     showNavbar () {
+      return ['/', '/notice', '/home', '/collect', '/classify', '/littleClass'].indexOf(this.$route.path) !== -1
+    },
+    needGap () {
       return ['/', '/notice', '/home', '/collect', '/classify'].indexOf(this.$route.path) !== -1
     }
   }
@@ -26,11 +29,17 @@ export default {
 
 <style>
 @import url("../static/font/iconfont.css");
+body {
+  margin: 0 13px;
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+.top-gap {
+  margin-top: 34px;
 }
 </style>

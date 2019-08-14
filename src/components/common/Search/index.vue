@@ -1,5 +1,5 @@
 <template>
-  <div class="search-bar">
+  <div class="search-bar" :class="{'top-gap': needGap}">
     <div class="search-container">
       <div class="search-box">
         <span class="search-icon iconfont iconzu7"></span>
@@ -52,6 +52,11 @@ export default {
       ]
     }
   },
+  computed: {
+    needGap () {
+      return ['/', '/notice', '/home', '/collect', '/classify'].indexOf(this.$route.path) !== -1
+    }
+  },
   created () {
     const path = this.$route.path
     if (path) {
@@ -74,21 +79,27 @@ export default {
 </script>
 
 <style scoped>
+
 .search-bar {
   display: flex;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 40px;
+  height: 28px;
   background-color: #fff;
   padding: 0;
   margin: 0;
   font-size: 12px;
   z-index: 100;
-  padding: 10px 20px;
+  padding: 3px 0;
+  /* margin-left: 5px; */
+}
+.top-gap {
+  padding-bottom: 13px;
 }
 .search-container {
+  margin-left: 13px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -97,8 +108,8 @@ export default {
 .search-box {
   width: 80%;
   max-width: 500px;
-  background-color: #dfdedf;
-  height: 40px;
+  background-color: #EBEBEB;
+  height: 28px;
   border-radius: 20px;
   position: relative;
   border: none;
@@ -106,10 +117,10 @@ export default {
 
 .search-icon {
   position: absolute;
-  left: 10px;
-  font-size: 24px;
-  top: 6px;
-  color: #777;
+  left: 5px;
+  font-size: 18px;
+  top: 4px;
+  /* color: #777; */
   z-index: 10;
 }
 
@@ -119,8 +130,8 @@ export default {
   top: 0;
   width: 80%;
   height: 95%;
-  left: 35px;
-  background-color: #dfdedf;
+  left: 31px;
+  background-color: #EBEBEB;
   outline: none;
   border: none;
   /* border-radius: 20px; */
@@ -131,6 +142,9 @@ export default {
   justify-content: center;
   align-items: center;
   width: 50px;
+}
+.person-icon {
+  font-size: 18px;
 }
 
 </style>

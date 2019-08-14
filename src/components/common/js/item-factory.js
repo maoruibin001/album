@@ -11,7 +11,8 @@ const ItemFactory = (function () {
           background: getRandomColor()
         },
         width: 130,
-        height: 140
+        height: 140,
+        desc: '新款产品质量监督局'
       }
     }
     return items

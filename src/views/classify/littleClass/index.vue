@@ -1,26 +1,37 @@
 <template>
-  <WaterFall class="box" @loadmore="loadmore" @reflowed="reflowed">
-    <waterfall-slot
-      class="slot-item"
-      v-for="(item, index) in items"
-      :width="item.width"
-      :height="item.height"
-      :order="index"
-      :key="item.index"
-      move-class="item-move"
-    >
-      <div class="item" @click="toLittleClass(item)">
-        <div class="title">产品大系列</div>
+<div class="container">
+  <Slider></Slider>
+  <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
+      <waterfall-slot
+        class="slot-item"
+        v-for="(item, index) in items"
+        :width="item.width"
+        :height="item.height"
+        :order="index"
+        :key="item.index"
+        move-class="item-move"
+      >
+      <div class="item">
         <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
+        <div class="item-desc">
+          <div class="left">
+            {{item.desc}}
+          </div>
+          <div class="right">
+            ...&nbsp;
+          </div>
+        </div>
       </div>
+      </waterfall-slot>
+    </WaterFall>
+</div>
 
-    </waterfall-slot>
-  </WaterFall>
 </template>
 
 <script>
 import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+import Slider from '@/components/Slider'
 // import ItemFactory from "@/components/common/js/item-factory";
 const items = []
 for (let i = 0; i < 11; i++) {
@@ -34,7 +45,8 @@ for (let i = 0; i < 11; i++) {
 export default {
   components: {
     WaterFall,
-    WaterfallSlot
+    WaterfallSlot,
+    Slider
   },
   data () {
     return {
@@ -50,18 +62,15 @@ export default {
       var img = new Image()
       img.src = item.url
       if (img.width > 0 || img.height > 0) {
-        item.height = (item.width - 12) * (img.height / img.width) + 48
+        item.height = item.width * (img.height / img.width)
         return
       }
       const timer = setInterval(() => {
         if (img.width > 0 || img.height > 0) {
-          item.height = (item.width - 12) * (img.height / img.width) + 48
+          item.height = item.width * (img.height / img.width)
           clearInterval(timer)
         }
       }, 30)
-    },
-    toLittleClass (item) {
-      this.$router.push('/littleClass')
     },
     reflowed () {
       // this.itemWidth = $(".slot-item").width();
@@ -80,23 +89,7 @@ export default {
 }
 </script>
 <style scoped>
-.box {
-  margin-left: -8px;
-}
-.item {
-  position: absolute;
-  top: 0;
-  left: 12px;
-  right: 0;
-  bottom: 12px;
-  background-color: #ffff;
-}
-.title {
-  height: 48px;
-  text-align: center;
-  line-height: 48px;
-  font-family: Regular;
-  font-size: 12px;
-  background-color:#F2F2F2;
+.container {
+  margin-top: 72px;
 }
 </style>
