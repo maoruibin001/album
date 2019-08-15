@@ -7,6 +7,7 @@ import littleClass from '@/views/classify/littleClass'
 import collect from '@/views/collect'
 import notice from '@/views/notice'
 import user from '@/views/user'
+import detail from '@/views/detail'
 
 Vue.use(Router)
 
@@ -40,7 +41,12 @@ export default new Router({
     path: '/littleClass',
     name: 'littleClass',
     component: littleClass
-  }
+  },
 
+  {
+    path: '/detail',
+    name: 'detail',
+    component: detail
+  }
   ]
 })

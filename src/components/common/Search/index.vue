@@ -5,7 +5,7 @@
         <span class="search-icon iconfont iconzu7"></span>
         <input type="text" class="search-input" placeholder="查找">
       </div>
-      <div class="person-box">
+      <div class="person-box" @click="toUser()">
         <div class="person-icon iconfont iconfuhao"></div>
       </div>
     </div>
@@ -65,6 +65,9 @@ export default {
     }
   },
   methods: {
+    toUser () {
+      this.$router.push('/user')
+    },
     chooseItem (item, isDisable) {
       if (!item) return
 
