@@ -1,8 +1,8 @@
 <template>
-    <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
-        <div class="container">
-            <Slider @chooseItem="chooseItem"></Slider>
-            <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
+    <div class="container">
+        <Slider @chooseItem="chooseItem"></Slider>
+        <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" class="scrollerbox" :on-infinite="loadmore">
+            <WaterFall @reflowed="reflowed" class="item-box">
                 <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
                     <div class="item">
                         <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
@@ -17,8 +17,8 @@
                     </div>
                 </waterfall-slot>
             </WaterFall>
-        </div>
-    </scroller>
+        </scroller>
+    </div>
 </template>
 
 <script>
@@ -33,8 +33,8 @@ for (let i = 0; i < 11; i++) {
     id: i,
     width: 130,
     height: 140,
-    desc: '新款产品质量监督局',
-    url: `static/test/${(i % 5) + 1}.jpg`
+    url: `static/test/${(i % 5) + 1}.jpg`,
+    desc: '新款产品质量监督局'
   })
 }
 export default {
@@ -69,18 +69,20 @@ export default {
     refresh (done) {
       setTimeout(() => {
         done()
-      }, 1500)
+      }, 2500)
     },
     loadmore (done) {
-      this.items.push.apply(
-        this.items,
-        items.map(e => {
-          return Object.assign(e, {
-            id: e.id + 100
+      setTimeout(() => {
+        this.items.push.apply(
+          this.items,
+          items.map(e => {
+            return Object.assign(e, {
+              id: e.id + 100
+            })
           })
-        })
-      )
-      done()
+        )
+        done()
+      }, 1500)
     }
   }
 }
@@ -89,6 +91,15 @@ export default {
 <style scoped>
 .container {
     margin-top: 72px;
+}
+.scrollerbox {
+  top: 72px;
+}
+
+.item-box {
+    margin-left: -8px;
+    /* top: 72px; */
+    /* padding-top: 72px; */
 }
 
 .item {
