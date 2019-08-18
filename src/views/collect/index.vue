@@ -62,16 +62,17 @@ export default {
       }, 1500)
     },
     loadmore (done) {
-      this.items.push.apply(
-        this.items,
-        items.map(e => {
-          return Object.assign(e, {
-            id: e.id + 100
+      setTimeout(() => {
+        this.items.push.apply(
+          this.items,
+          items.map(e => {
+            return Object.assign(e, {
+              id: e.id + 100
+            })
           })
-        })
-      )
-
-      done()
+        )
+        done()
+      }, 1500)
     }
   }
 }
