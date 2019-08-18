@@ -93,7 +93,7 @@ export default {
     margin-top: 72px;
 }
 .scrollerbox {
-  top: 72px;
+  top: 72px !important;
 }
 
 .item-box {
