@@ -16,6 +16,7 @@
 
 <script>
 import Waterfall from 'vue-waterfall/lib/waterfall'
+import { isPc } from '@/utils'
 // import Carousel from "../Carousel";
 export default {
   props: {
@@ -28,10 +29,10 @@ export default {
     Waterfall
   },
   mounted () {
-    // window.addEventListener('scroll', this.scrollHandler)
+    isPc() && window.addEventListener('scroll', this.scrollHandler)
   },
   beforeDestroy () {
-    // window.addEventListener('scroll', this.scrollHandler)
+    isPc() && window.addEventListener('scroll', this.scrollHandler)
   },
 
   data: function () {
@@ -41,19 +42,19 @@ export default {
     }
   },
   methods: {
-    // scrollHandler () {
-    //   const scrollTop =
-    //     document.documentElement.scrollTop || document.body.scrollTop
-    //   if (scrollTop + window.innerHeight >= document.body.clientHeight) {
-    //     this.addItems()
-    //   }
-    // },
-    // addItems: function () {
-    //   if (!this.isBusy) {
-    //     this.isBusy = true
-    //     this.$emit('loadmore')
-    //   }
-    // },
+    scrollHandler () {
+      const scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop
+      if (scrollTop + window.innerHeight >= document.body.clientHeight) {
+        this.addItems()
+      }
+    },
+    addItems: function () {
+      if (!this.isBusy) {
+        this.isBusy = true
+        this.$emit('loadmore')
+      }
+    },
     // shuffle: function() {
     //   this.items.sort(function() {
     //     return Math.random() - 0.5;

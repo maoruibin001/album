@@ -2,7 +2,7 @@
     <div class="container">
         <Slider @chooseItem="chooseItem"></Slider>
         <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" class="scrollerbox" :on-infinite="loadmore">
-            <WaterFall @reflowed="reflowed" class="item-box">
+            <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
                 <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
                     <div class="item">
                         <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
@@ -72,6 +72,9 @@ export default {
       }, 2500)
     },
     loadmore (done) {
+      if (typeof done !== 'function') {
+        done = function () {}
+      }
       setTimeout(() => {
         this.items.push.apply(
           this.items,

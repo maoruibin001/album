@@ -8,7 +8,7 @@
                     <div class="date">{{item.createTime | getGapDay}}</div>
                 </div>
                 <div class="content">
-                    <img :src="item.url" :ref="item.id" style="width: 100%" alt />
+                    <img :src="item.url" :ref="item.id" style="width: 100%;max-width: 600px;" alt />
                 </div>
             </div>
         </div>
@@ -50,6 +50,9 @@ export default {
       }, 1500)
     },
     loadmore (done) {
+      if (typeof done !== 'function') {
+        done = function () {}
+      }
       setTimeout(() => {
         this.items.push.apply(
           this.items,
@@ -107,5 +110,6 @@ export default {
     width: 90%;
     margin-left: 28px;
     margin-top: 9px;
+    display: flex;
 }
 </style>

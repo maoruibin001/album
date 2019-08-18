@@ -1,10 +1,18 @@
 <template>
     <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
-        <WaterFall class="box" @reflowed="reflowed">
+        <WaterFall @loadmore="loadmore" class="box" @reflowed="reflowed">
             <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
                 <div class="item" @click="toLittleClass(item)">
                     <div class="title">产品大系列</div>
-                    <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
+                    <div class="img-box">
+                        <div class="left">
+                            <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
+                        </div>
+                        <div class="right">
+                            <img :src="item.url2" :ref="item.id" style="width: 100%" alt />
+                            <img :src="item.url3" :ref="item.id" style="width: 100%" alt />
+                        </div>
+                    </div>
                 </div>
 
             </waterfall-slot>
@@ -15,16 +23,18 @@
 <script>
 import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
-import { getImageHeightByWidth } from '@/utils'
+// import { getImageHeightByWidth } from '@/utils'
 // import PullTo from 'vue-pull-to'
 // import ItemFactory from "@/components/common/js/item-factory";
 const items = []
 for (let i = 0; i < 11; i++) {
   items.push({
     id: i,
-    width: 130,
-    height: 140,
-    url: `static/test/${(i % 5) + 1}.jpg`
+    width: 180,
+    height: 155,
+    url: `static/test/${i % 5 + 1}.jpg`,
+    url2: `static/test/${i % 4 + 1}.jpg`,
+    url3: `static/test/${i % 3 + 2}.jpg`
   })
 }
 export default {
@@ -44,9 +54,10 @@ export default {
   },
   methods: {
     getCurrentHeight (item) {
-      getImageHeightByWidth(item.url, item.width).then(height => {
-        item.height = height
-      })
+      console.log(item.width)
+      // getImageHeightByWidth(item.url, item.width, 12, 42).then(height => {
+      //   item.height = height
+      // })
     },
     toLittleClass (item) {
       this.$router.push('/littleClass')
@@ -61,10 +72,13 @@ export default {
       }, 2000)
     },
 
-    loadmore (loaded) {
+    loadmore (done) {
+      if (typeof done !== 'function') {
+        done = function () {}
+      }
       setTimeout(() => {
         // this.dataList = this.dataList.concat(this.dataList)
-        loaded('done')
+        done('done')
       }, 2000)
     },
 
@@ -113,5 +127,23 @@ export default {
     font-family: Regular;
     font-size: 12px;
     background-color: #F2F2F2;
+}
+.img-box {
+  display: flex;
+}
+.left {
+  flex: 5;
+  display: flex;
+}
+.right {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+.left>img {
+  align-self: stretch;
+}
+ .right>img {
+  flex: 1;
 }
 </style>

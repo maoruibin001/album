@@ -42,6 +42,9 @@ export default {
       }, 1500)
     },
     loadmore (done) {
+      if (typeof done !== 'function') {
+        done = function () {}
+      }
       setTimeout(() => {
         this.items.push.apply(this.items, ItemFactory.get(30))
         done()

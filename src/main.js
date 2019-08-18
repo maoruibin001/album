@@ -3,7 +3,9 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import './plugins'
+import { initPlugin } from './plugins'
+
+initPlugin()
 
 Vue.config.productionTip = false
 

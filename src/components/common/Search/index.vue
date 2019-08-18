@@ -121,6 +121,8 @@ export default {
   border-radius: 20px;
   position: relative;
   border: none;
+  display: flex;
+  overflow: hidden;
 }
 
 .search-icon {
@@ -137,7 +139,7 @@ export default {
   left: 0;
   top: 0;
   width: 80%;
-  height: 95%;
+  height: 26px;
   left: 31px;
   background-color: #EBEBEB;
   outline: none;

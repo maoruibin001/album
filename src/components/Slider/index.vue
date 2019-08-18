@@ -47,7 +47,7 @@ export default {
 .slider-container {
   width: 100%;
   height: 38px;
-  background-color: #fff;
+  /* background-color: #fff; */
   position:fixed;
   left: 13px;
   top: 34px;
