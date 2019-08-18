@@ -10,7 +10,13 @@
 <script>
 const COLORSET = ['#252B18', '#4A3901', '#40481F', '#8B7450', '#647C02']
 const list = []
-for (let i = 0; i < 25; i++) {
+list.push({
+  id: 0,
+  title: '全部',
+  color: COLORSET[0],
+  isActive: true
+})
+for (let i = 1; i < 25; i++) {
   list.push({
     id: i,
     title: '产品小系列' + i,

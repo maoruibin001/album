@@ -19,12 +19,14 @@
 import { getGapDay } from '@/utils/date'
 const items = []
 for (let i = 0; i < 11; i++) {
+  const time = Date.now() - (i) * 24 * 60 * 60 * 1000 * 0.2
   items.push({
     id: i,
     title: '默认最新的一个',
     icon: 'iconzu3',
     url: `static/test/${(i % 5) + 1}.jpg`,
-    createTime: Date.now() - (i) * 24 * 60 * 60 * 1000
+    createTime: time,
+    str: new Date(time).toLocaleTimeString()
   })
 }
 export default {

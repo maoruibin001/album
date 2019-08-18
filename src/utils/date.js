@@ -14,10 +14,14 @@ export function dateFormat (date = new Date(), yearDivider = '-', hourDivider = 
 export function getGapDay (date = new Date(), anchorDate = new Date()) {
   if (!date || !anchorDate) throw new Error('请传入有效日期')
   const ONEDAY = 1 * 24 * 60 * 60 * 1000
-  const dateTime = new Date(date).getTime() - (new Date(date).getTime() % ONEDAY)
-  const anchorDateTime = new Date(anchorDate).getTime() - (new Date(anchorDate).getTime() % ONEDAY)
-
+  const ONEHour = 1 * 60 * 60 * 1000
+  const dateTime = new Date(date).setHours(0, 0, 0, 0)
+  const anchorDateTime = new Date(anchorDate).setHours(0, 0, 0, 0)
   const gapDay = parseInt((dateTime - anchorDateTime) / ONEDAY)
-
-  return gapDay > 0 ? gapDay + '天后' : (gapDay === 0 ? '今天' : -gapDay + '天前')
+  if (gapDay === 0) {
+    const gapHours = parseInt((new Date(date).getTime() - new Date(anchorDate).getTime()) / ONEHour)
+    return gapHours > 0 ? gapHours + '小时后' : (gapHours === 0 ? '刚刚' : -gapHours + '小时前')
+  } else {
+    return gapDay > 0 ? gapDay + '天后' : -gapDay + '天前'
+  }
 }

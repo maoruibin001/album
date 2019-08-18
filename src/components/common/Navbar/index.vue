@@ -32,7 +32,17 @@ export default {
           isActive: false,
           iconClass: 'iconzu2',
           path: '/classify',
-          params: {}
+          params: {},
+          children: [
+            {
+              id: 5,
+              text: '小类',
+              isActive: false,
+              iconClass: 'iconzu2',
+              path: '/littleClass',
+              params: {}
+            }
+          ]
         },
         {
           id: 3,
@@ -55,8 +65,22 @@ export default {
   },
   created () {
     const path = this.$route.path
+    let activeItem = null
     if (path) {
-      const activeItem = this.navList.find(e => e.path === path)
+      for (const e of this.navList) {
+        if (e.path === path) {
+          activeItem = e
+          break
+        }
+        if (e.children) {
+          for (const ele of e.children) {
+            if (ele.path === path) {
+              activeItem = e
+              break
+            }
+          }
+        }
+      }
       activeItem && this.chooseItem(activeItem, true)
     }
   },
