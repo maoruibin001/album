@@ -1,7 +1,7 @@
 <template>
 <div class="slider-container">
     <ul class="slider-box">
-      <li class="slider-item" v-for="(item, i) of list" :key="i" :style="{backgroundColor: item.color}">{{item.title}}</li>
+      <li class="slider-item" @click="chooseItem(item)" :class="{active: item.isActive}" v-for="(item, i) of list" :key="i" :style="{backgroundColor: item.color}">{{item.title}}</li>
     </ul>
 </div>
 
@@ -14,7 +14,8 @@ for (let i = 0; i < 25; i++) {
   list.push({
     id: i,
     title: '产品小系列' + i,
-    color: COLORSET[i] || COLORSET[i % (COLORSET.length)]
+    color: COLORSET[i] || COLORSET[i % (COLORSET.length)],
+    isActive: false
   })
 }
 export default {
@@ -25,6 +26,14 @@ export default {
   },
   mounted () {
 
+  },
+  methods: {
+    chooseItem (item) {
+      this.list.forEach(e => {
+        e.isActive = (e.id === item.id)
+      })
+      this.$emit('chooseItem', item)
+    }
   }
 }
 </script>
@@ -61,5 +70,9 @@ export default {
   border-radius: 5px;
   margin-right: 5px;
   color: #EDEDED;
+}
+
+.active {
+  background-color: orange !important;
 }
 </style>

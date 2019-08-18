@@ -1,26 +1,22 @@
 <template>
-  <WaterFall class="box" @loadmore="loadmore" @reflowed="reflowed">
-    <waterfall-slot
-      class="slot-item"
-      v-for="(item, index) in items"
-      :width="item.width"
-      :height="item.height"
-      :order="index"
-      :key="item.index"
-      move-class="item-move"
-    >
-      <div class="item" @click="toLittleClass(item)">
-        <div class="title">产品大系列</div>
-        <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
-      </div>
+    <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
+        <WaterFall class="box" @reflowed="reflowed">
+            <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
+                <div class="item" @click="toLittleClass(item)">
+                    <div class="title">产品大系列</div>
+                    <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
+                </div>
 
-    </waterfall-slot>
-  </WaterFall>
+            </waterfall-slot>
+        </WaterFall>
+    </scroller>
 </template>
 
 <script>
 import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+import { getImageHeightByWidth } from '@/utils'
+// import PullTo from 'vue-pull-to'
 // import ItemFactory from "@/components/common/js/item-factory";
 const items = []
 for (let i = 0; i < 11; i++) {
@@ -35,6 +31,7 @@ export default {
   components: {
     WaterFall,
     WaterfallSlot
+    // PullTo
   },
   data () {
     return {
@@ -47,18 +44,9 @@ export default {
   },
   methods: {
     getCurrentHeight (item) {
-      var img = new Image()
-      img.src = item.url
-      if (img.width > 0 || img.height > 0) {
-        item.height = (item.width - 12) * (img.height / img.width) + 48
-        return
-      }
-      const timer = setInterval(() => {
-        if (img.width > 0 || img.height > 0) {
-          item.height = (item.width - 12) * (img.height / img.width) + 48
-          clearInterval(timer)
-        }
-      }, 30)
+      getImageHeightByWidth(item.url, item.width).then(height => {
+        item.height = height
+      })
     },
     toLittleClass (item) {
       this.$router.push('/littleClass')
@@ -66,37 +54,64 @@ export default {
     reflowed () {
       // this.itemWidth = $(".slot-item").width();
     },
-    loadmore () {
-      this.items.push.apply(
-        this.items,
-        items.map(e => {
-          return Object.assign(e, {
-            id: e.id + 100
-          })
-        })
-      )
+    refresh (loaded) {
+      setTimeout(() => {
+        // this.dataList.reverse()
+        loaded('done')
+      }, 2000)
+    },
+
+    loadmore (loaded) {
+      setTimeout(() => {
+        // this.dataList = this.dataList.concat(this.dataList)
+        loaded('done')
+      }, 2000)
+    },
+
+    stateChange (state) {
+      if (state === 'pull' || state === 'trigger') {
+        this.iconLink = '#icon-arrow-bottom'
+      } else if (state === 'loading') {
+        this.iconLink = '#icon-loading'
+      } else if (state === 'loaded-done') {
+        this.iconLink = '#icon-finish'
+      }
     }
   }
+  // loadmore () {
+  //   this.items.push.apply(
+  //     this.items,
+  //     items.map(e => {
+  //       return Object.assign(e, {
+  //         id: e.id + 100
+  //       })
+  //     })
+  //   )
+  // }
+  // }
 }
 </script>
+
 <style scoped>
 .box {
-  margin-left: -8px;
+    margin-left: -8px;
 }
+
 .item {
-  position: absolute;
-  top: 0;
-  left: 12px;
-  right: 0;
-  bottom: 12px;
-  background-color: #ffff;
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 0;
+    bottom: 12px;
+    background-color: #ffff;
 }
+
 .title {
-  height: 48px;
-  text-align: center;
-  line-height: 48px;
-  font-family: Regular;
-  font-size: 12px;
-  background-color:#F2F2F2;
+    height: 48px;
+    text-align: center;
+    line-height: 48px;
+    font-family: Regular;
+    font-size: 12px;
+    background-color: #F2F2F2;
 }
 </style>

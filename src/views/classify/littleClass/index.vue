@@ -1,37 +1,31 @@
 <template>
-<div class="container">
-  <Slider></Slider>
-  <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
-      <waterfall-slot
-        class="slot-item"
-        v-for="(item, index) in items"
-        :width="item.width"
-        :height="item.height"
-        :order="index"
-        :key="item.index"
-        move-class="item-move"
-      >
-      <div class="item">
-        <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
-        <div class="item-desc">
-          <div class="left">
-            {{item.desc}}
-          </div>
-          <div class="right">
-            ...&nbsp;
-          </div>
+    <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
+        <div class="container">
+            <Slider @chooseItem="chooseItem"></Slider>
+            <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
+                <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
+                    <div class="item">
+                        <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
+                        <div class="item-desc">
+                            <div class="left">
+                                {{item.desc}}
+                            </div>
+                            <div class="right">
+                                ...&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </waterfall-slot>
+            </WaterFall>
         </div>
-      </div>
-      </waterfall-slot>
-    </WaterFall>
-</div>
-
+    </scroller>
 </template>
 
 <script>
 import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import Slider from '@/components/Slider'
+import { getImageHeightByWidth } from '@/utils'
 // import ItemFactory from "@/components/common/js/item-factory";
 const items = []
 for (let i = 0; i < 11; i++) {
@@ -39,6 +33,7 @@ for (let i = 0; i < 11; i++) {
     id: i,
     width: 130,
     height: 140,
+    desc: '新款产品质量监督局',
     url: `static/test/${(i % 5) + 1}.jpg`
   })
 }
@@ -58,24 +53,25 @@ export default {
     this.$nextTick(() => {})
   },
   methods: {
+    chooseItem (item) {
+      const index1 = Math.floor(Math.random() * (items.length - 1))
+      const index2 = Math.floor(Math.random() * (items.length - 1))
+      this.items = items.slice(Math.min(index1, index2), Math.max(index1, index2))
+    },
     getCurrentHeight (item) {
-      var img = new Image()
-      img.src = item.url
-      if (img.width > 0 || img.height > 0) {
-        item.height = item.width * (img.height / img.width)
-        return
-      }
-      const timer = setInterval(() => {
-        if (img.width > 0 || img.height > 0) {
-          item.height = item.width * (img.height / img.width)
-          clearInterval(timer)
-        }
-      }, 30)
+      getImageHeightByWidth(item.url, item.width).then(height => {
+        item.height = height
+      })
     },
     reflowed () {
       // this.itemWidth = $(".slot-item").width();
     },
-    loadmore () {
+    refresh (done) {
+      setTimeout(() => {
+        done()
+      }, 1500)
+    },
+    loadmore (done) {
       this.items.push.apply(
         this.items,
         items.map(e => {
@@ -84,12 +80,41 @@ export default {
           })
         })
       )
+      done()
     }
   }
 }
 </script>
+
 <style scoped>
 .container {
-  margin-top: 72px;
+    margin-top: 72px;
+}
+
+.item {
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 0;
+    bottom: 22px;
+}
+
+.item-desc {
+    display: flex;
+}
+
+.left {
+    flex: 5;
+    font-size: 12px;
+    text-align: left;
+}
+
+.right {
+    flex: 1;
+    text-align: right;
+    color: #4A4747;
+    font-size: 24px;
+    font-weight: bolder;
+    line-height: 8px;
 }
 </style>

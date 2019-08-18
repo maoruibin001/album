@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{'left-gap': isPc}">
     <Search v-if = "showNavbar"/>
-    <router-view  class="top-gap"/>
+    <router-view  class="top-gap bottom-gap"/>
     <Navbar v-if = "showNavbar"></Navbar>
   </div>
 </template>
@@ -9,6 +9,7 @@
 <script>
 import Navbar from '@/components/common/Navbar'
 import Search from '@/components/common/Search'
+import { isPc } from '@/utils'
 // import "../static/font/iconfont.css";
 export default {
   name: 'App',
@@ -22,6 +23,11 @@ export default {
     },
     needGap () {
       return ['/', '/notice', '/home', '/collect', '/classify'].indexOf(this.$route.path) !== -1
+    }
+  },
+  data () {
+    return {
+      isPc: isPc()
     }
   }
 }
@@ -40,6 +46,12 @@ body {
   color: #2c3e50;
 }
 .top-gap {
-  margin-top: 34px;
+  margin-top: 44px;
+}
+.left-gap {
+  margin-left: 46px;
+}
+.bottom-gap {
+  margin-bottom: 50px;
 }
 </style>

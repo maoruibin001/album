@@ -13,7 +13,9 @@
   "dependencies": {
     "vue": "^2.5.2",
     "vue-carousel": "^0.18.0",
+    "vue-pull-to-refresh": "^1.1.4",
     "vue-router": "^3.0.1",
+    "vue-scroller": "^2.2.4",
     "vue-waterfall": "^1.0.6"
   },
   "devDependencies": {

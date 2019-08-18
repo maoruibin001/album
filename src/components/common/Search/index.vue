@@ -1,5 +1,5 @@
 <template>
-  <div class="search-bar" :class="{'top-gap': needGap}">
+  <div class="search-bar" :class="{'top-gap': needGap, 'left-gap': isPc}">
     <div class="search-container">
       <div class="search-box">
         <span class="search-icon iconfont iconzu7"></span>
@@ -13,9 +13,11 @@
 </template>
 
 <script>
+import { isPc } from '@/utils'
 export default {
   data () {
     return {
+      isPc: isPc(),
       navList: [
         {
           id: 1,
@@ -100,6 +102,9 @@ export default {
 }
 .top-gap {
   padding-bottom: 13px;
+}
+.left-gap {
+  margin-left: 46px;
 }
 .search-container {
   margin-left: 13px;

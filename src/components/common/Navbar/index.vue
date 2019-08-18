@@ -1,7 +1,7 @@
 <template>
-  <ul class="nav-bar">
-    <li class="bar-item" v-for="(item, i) of navList" :key="i" @click="chooseItem(item)">
-      <div class="item-box" :class="{active: item.isActive}">
+  <ul :class="isPc ? 'pc-nav-bar' : 'nav-bar'">
+    <li :class="isPc ? 'pc-bar-item' : 'bar-item'" v-for="(item, i) of navList" :key="i" @click="chooseItem(item)">
+      <div :class="{'pc-item-box': isPc, active: item.isActive}">
         <div class="icon iconfont" :class="item.iconClass">
           <!-- <img :src="item.isActive ? item.activeIconUrl: item.iconUrl" alt /> -->
         </div>
@@ -12,9 +12,11 @@
 </template>
 
 <script>
+import { isPc } from '@/utils'
 export default {
   data () {
     return {
+      isPc: isPc(),
       navList: [
         {
           id: 1,
@@ -73,6 +75,19 @@ export default {
 </script>
 
 <style scoped>
+.pc-nav-bar {
+  display: flex;
+  position: fixed;
+  z-index: 110;
+  top: 100px;
+  left: 46px;
+  width: 400px;
+  height: 46px;
+  background-color: #F0EFEF;
+  transform-origin: left top;
+  transform: rotate(90deg);
+  font-size: 12px;
+}
 .nav-bar {
   display: flex;
   position: fixed;
@@ -84,6 +99,24 @@ export default {
   padding: 0;
   margin: 0;
   font-size: 12px;
+}
+.pc-bar-item {
+  flex: 1;
+  transform-origin: right top;
+  transform: rotate(-90deg);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  position: relative;
+  justify-content: bottom;
+  align-items: bottom;
+  cursor: pointer;
+  left: -100px;
+}
+.pc-item-box {
+  position:absolute;
+  right: 12px;
 }
 .bar-item {
   flex: 1;
