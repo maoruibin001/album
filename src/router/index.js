@@ -8,6 +8,7 @@ import collect from '@/views/collect'
 import notice from '@/views/notice'
 import user from '@/views/user'
 import detail from '@/views/detail'
+import upload from '@/components/common/Cropper/cropper-item'
 
 Vue.use(Router)
 
@@ -47,6 +48,11 @@ export default new Router({
     path: '/detail',
     name: 'detail',
     component: detail
+  },
+  {
+    path: '/upload',
+    name: 'upload',
+    component: upload
   }
   ]
 })
