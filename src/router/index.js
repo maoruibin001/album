@@ -8,7 +8,7 @@ import collect from '@/views/collect'
 import notice from '@/views/notice'
 import user from '@/views/user'
 import detail from '@/views/detail'
-import upload from '@/components/common/Cropper/cropper-item'
+import upload from '@/components/common/Cropper/cropper-list'
 
 Vue.use(Router)
 

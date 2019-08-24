@@ -9,10 +9,10 @@
                 <div class="shn-modal-content-box">
                     <div class="shn-modal-content-close" @click="$emit('update:visible', false)">
                         <span class="shn-modal-close-x">
-                      <i class="shni shn-close_1" />
+                      X
                     </span>
                     </div>
-                    <div class="shn-modal-content-header">
+                    <div class="shn-modal-content-header" v-if="title">
                         <div>{{ title }}</div>
                     </div>
                     <div class="shn-modal-content-body">
@@ -54,7 +54,7 @@ export default {
     },
     title: {
       type: String,
-      default: 'Title'
+      default: ''
     },
     mask: {
       type: Boolean,
