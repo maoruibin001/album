@@ -20,3 +20,7 @@ export function getImageHeightByWidth (url, width, gapHorizontal = 12, gapVertic
     }, 30)
   })
 }
+
+export function ellipsis (str = '', res = 10) {
+  return str.length > res ? str.slice(0, res - 1) + '...' : str
+}

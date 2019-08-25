@@ -1,7 +1,7 @@
 <template>
-  <div id="app" :class="{'left-gap': isPc}">
+  <div id="app" :class="{'left-gap': isPc && !notNeedGap}">
     <Search v-if = "showNavbar"/>
-    <router-view  class="top-gap bottom-gap"/>
+    <router-view  :class="{'top-gap': !notNeedGap, 'bottom-gap': !notNeedGap}"/>
     <Navbar v-if = "showNavbar"></Navbar>
   </div>
 </template>
@@ -23,6 +23,9 @@ export default {
     },
     needGap () {
       return ['/', '/notice', '/home', '/collect', '/classify'].indexOf(this.$route.path) !== -1
+    },
+    notNeedGap () {
+      return this.$route.path.indexOf('/admin') !== -1
     }
   },
   data () {

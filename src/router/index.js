@@ -8,7 +8,10 @@ import collect from '@/views/collect'
 import notice from '@/views/notice'
 import user from '@/views/user'
 import detail from '@/views/detail'
-import upload from '@/components/common/Cropper/cropper-list'
+// import upload from '@/components/common/Cropper/cropper-list'
+import adminNav from '@/views/administer/nav'
+import adminBigClass from '@/views/administer/bigClass'
+import adminlittleClass from '@/views/administer/littleClass'
 
 Vue.use(Router)
 
@@ -50,9 +53,21 @@ export default new Router({
     component: detail
   },
   {
-    path: '/upload',
-    name: 'upload',
-    component: upload
+    path: '/admin',
+    name: 'admin',
+    component: adminNav,
+    children: [
+      {
+        path: '/admin/:id',
+        name: 'bigClass',
+        component: adminBigClass
+      },
+      {
+        path: '/admin/:id/:seriId',
+        name: 'littleClass',
+        component: adminlittleClass
+      }
+    ]
   }
   ]
 })

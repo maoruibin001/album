@@ -4,6 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import { initPlugin } from './plugins'
+import './filters'
+// import Vuex from 'vuex'
+// Vue.use(Vuex)
 
 initPlugin()
 
