@@ -6,20 +6,20 @@
             </div>
             <div class="content">
                 <ul>
-                    <li class="big-class" v-for='(item, index) of list' :key='index'>
-                        <div class="title-box">
+                    <li class="big-class"  v-for='(item, index) of list' :key='index' @click="showDesc(item.id)">
+                        <div class="title-box" :class="{active: item.id === activeId}">
                             <div class="left" :title="item.name">
                                 {{item.name | ellipsis(6)}}
                             </div>
                             <div class="right">
-                                <div class="operation">添加</div>
+                                <div class="operation" @click.stop="addProduct(item.id)">添加</div>
                                 <div class="operation">移动</div>
                                 <div class="operation">重命名</div>
                             </div>
                         </div>
 
                         <ul>
-                            <li class="little-class" v-for="(e, i) of item.children" :key="i">
+                            <li class="little-class" :class="{active: e.id === activeId}" @click.stop="showDesc(e.id)" v-for="(e, i) of item.children" :key="i">
                                 <div class="title-box">
                                     <div class="left" :title="e.name">
                                         &nbsp;&nbsp;{{e.name | ellipsis(5)}}
@@ -35,22 +35,31 @@
                     </li>
                 </ul>
             </div>
-            <div class="footer" @click="addProduct()">
+            <div class="footer" @click="addProduct(-1)">
                 <div class="text">添加产品</div>
             </div>
         </div>
         <div class="admin-child">
             <router-view />
         </div>
-
+        <ProductEdit :pid="pid"></ProductEdit>
     </div>
 </template>
 
 <script>
 import store from 'store/admin'
+import ProductEdit from '@/components/ProductEdit'
+
 export default {
+  components: {
+    ProductEdit
+  },
   data () {
     return {
+    //   isEdit: false,
+      activeId: -2,
+      pid: -1,
+      showDialog: false,
       height: window.screen.availHeight - 15
     }
   },
@@ -59,10 +68,30 @@ export default {
       return store.state.productList
     }
   },
+  created () {
+    store.dispatch('getProducts')
+  },
   mounted () {},
   methods: {
-    addProduct () {
-
+    addProduct (pid) {
+      this.pid = pid
+      const editInfo = {
+        name: '',
+        mainImgList: [],
+        descImgThumb: '',
+        descImg: '',
+        // gifImgThumb: '',
+        gifImg: '',
+        originFile: '',
+        prize: 0
+      }
+      store.commit('setEditing', false)
+      store.commit('setEditInfo', editInfo)
+      store.commit('setEditDiologShow', true)
+    },
+    showDesc (id) {
+      this.activeId = id
+      this.$router.push('/admin/' + id)
     }
   }
 
@@ -104,8 +133,12 @@ ul {
             }
         }
         .content {
+            .active {
+                color:#c10000;
+            }
             // flex: 10
             .big-class {
+                cursor: pointer;
                 text-align: left;
                 margin-bottom: 10px;
                 padding: 5px;
@@ -167,4 +200,5 @@ ul {
         background-color: #fff;
     }
 }
+
 </style>

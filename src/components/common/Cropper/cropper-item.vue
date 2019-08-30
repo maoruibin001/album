@@ -1,17 +1,17 @@
 <template>
     <div style="width: 100%;height: 100%;">
-        <div class="item-container" :style="{backgroundImage: `url(${img})`}">
+        <div class="item-container" :style="{backgroundImage: `url(${img})`, ...styleObj}">
             <input type="file" @mouseenter="showMask()" ref="input" class="file" @change="fileChange($event)">
             <div v-if="!img" class="tip">
                 <img :src="addIcon" alt="">
                 <span>{{ tip }}</span>
             </div>
             <div class="img-mask" v-if="showImgMask"  @mouseleave="hideMask()" @click="chooseFile()">
-              <i @click="preview($event)" title="预览"><img class="icon" src="/static/icon/preview.png" alt=""></i>
-              <i @click="deleteImg($event)" title="删除"><img class="icon" src="/static/icon/delete.png" alt=""></i>
+              <i @click.stop="preview($event)" title="预览"><img class="icon" src="/static/icon/preview.png" alt=""></i>
+              <i @click.stop="showConfirm=true" title="删除"><img class="icon" src="/static/icon/delete.png" alt=""></i>
             </div>
         </div>
-        <modal :visible.sync="showBigImg" class="showBigImg">
+        <modal :visible.sync="showBigImg" class="showBigImg" @close="showBigImg=false">
           <template v-slot:body>
             <div style="width:500px;height:400px;display:flex;">
               <img :src="bgImg" style="width: 100%;"  alt="">
@@ -47,26 +47,39 @@
               <button class="btn" @click="hideCropper">
                                   <span>取消</span>
                               </button>
-              <button class="btn sure" @click="cropperConfirm">
+              <button class="btn success" @click="cropperConfirm">
                                 <span>确定</span>
                             </button>
             </template>
     </modal>
+
+    <Confirm :show="showConfirm" @close="showConfirm=false" @ok="sure" :content="confirmContent"></Confirm>
   </div>
 </template>
 
 <script>
 import { VueCropper } from 'vue-cropper'
-import modal from './modal'
+import modal from '../Modal'
+import Confirm from '@/components/common/Confirm'
+import { imgUploadApi } from '@/utils/cgiConfig'
 export default {
   components: {
     VueCropper,
+    Confirm,
     modal
   },
   props: {
+    styleObj: {
+      type: Object,
+      default: () => ({})
+    },
     id: {
       type: Number,
       default: -1
+    },
+    url: {
+      type: Object,
+      default: () => imgUploadApi.upload
     },
     img: {
       default: ''
@@ -77,13 +90,17 @@ export default {
     },
     tip: {
       type: String,
-      default: '请选择图片'
+      default: ''
     },
     cropper: {
       type: Boolean,
       default: true
     },
     fixed: {
+      type: Boolean,
+      default: true
+    },
+    isImg: {
       type: Boolean,
       default: true
     },
@@ -94,6 +111,11 @@ export default {
   },
   data () {
     return {
+      confirmContent: `确定要删除此张图片吗？`,
+      showConfirm: false,
+      host: 'http://localhost:3433',
+      originPath: this.isImg ? '/api/download/image/origin/' : '/api/download/file/origin/',
+      thumbPath: this.isImg ? '/api/download/image/thumbnail/' : '',
       isMaskShow: false,
       showBigImg: false,
       cropperImg: this.img || '',
@@ -121,13 +143,28 @@ export default {
     }
   },
   methods: {
+    sure () {
+      this.deleteImg()
+    },
+    emitChange (event, data) {
+      if (event === 'fileChange') {
+        const fmData = new FormData()
+        fmData.append('file', data.blob, 'a.jpg')
+        this.$ajax(this.url, fmData).then(ret => {
+          this.$emit(event, Object.assign(ret, {
+            url: this.host + this.originPath + ret.filename,
+            thumbUrl: this.host + this.thumbPath + ret.filename
+          }))
+        })
+      } else {
+        this.$emit(event, data)
+      }
+    },
     preview (event) {
-      event.stopPropagation()
       this.showBigImg = true
     },
     deleteImg (event) {
-      event.stopPropagation()
-      this.$emit('deleteImg', { img: this.bgImg, id: this.id })
+      this.emitChange('deleteImg', { img: this.bgImg, id: this.id })
     },
     chooseFile () {
       this.$refs.input.click()
@@ -154,7 +191,7 @@ export default {
             this.cropperShow = true
           } else {
             this.bgImg = e.target.result
-            this.$emit('change', {
+            this.emitChange('fileChange', {
               base64: this.cropperImg,
               blob: file
             })
@@ -162,7 +199,7 @@ export default {
           this.$refs.input.value = ''
         }
         reader.onerror = (e) => {
-          this.$emit('change', {
+          this.emitChange('fileChange', {
             base64: '',
             blob: file
           })
@@ -194,7 +231,7 @@ export default {
       this.cropperShow = false
       const promiseList = [this.getBlob(), this.getBase64()]
       Promise.all(promiseList).then(data => {
-        this.$emit('change', {
+        this.emitChange('fileChange', {
           id: this.id,
           base64: data[1],
           blob: data[0]
@@ -214,8 +251,8 @@ export default {
 
 <style scoped>
 .item-container {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
     position: relative;
     cursor: pointer;
     display: -webkit-box;
@@ -229,8 +266,8 @@ export default {
     align-items: center;
     height: 100%;
     /* min-height: 100px; */
-    border: 1px dashed #d6d6d6;
-    border-radius: 4px;
+    /* border: 1px dashed #d6d6d6; */
+    /* border-radius: 6px; */
     color: #d6d6d6;
     background-color: #fafafa;
     -webkit-transition: border-color .3s ease;
@@ -254,47 +291,6 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-.btn {
-    position: relative;
-    display: inline-block;
-    margin-right: 8px;
-    margin-bottom: 12px;
-    padding: 0 15px;
-    height: 32px;
-    line-height: 1.6;
-    font-weight: 400;
-    white-space: nowrap;
-    text-align: center;
-    background-image: none;
-    border: 1px solid transparent;
-    -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, .015);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, .015);
-    cursor: pointer;
-    -webkit-transition: all .3s cubic-bezier(.645, .045, .355, 1);
-    transition: all .3s cubic-bezier(.645, .045, .355, 1);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    font-size: 14px;
-    border-radius: 4px;
-    color: rgba(0, 0, 0, .65);
-    background-color: #fff;
-    border-color: #d9d9d9;
-    outline: none;
-}
-
-.sure {
-    color: #fff;
-    background-color: #409eff;
-    border-color: #409eff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .12);
-    -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, .045);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, .045);
 }
 
 .preview {

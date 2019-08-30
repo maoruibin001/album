@@ -38,6 +38,7 @@ export default {
 
 <style>
 @import url("../static/font/iconfont.css");
+@import url("./assets/scss/common.scss");
 body {
   margin: 0 13px;
 }

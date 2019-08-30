@@ -10,8 +10,14 @@ import user from '@/views/user'
 import detail from '@/views/detail'
 // import upload from '@/components/common/Cropper/cropper-list'
 import adminNav from '@/views/administer/nav'
-import adminBigClass from '@/views/administer/bigClass'
-import adminlittleClass from '@/views/administer/littleClass'
+// import adminBigClass from '@/views/administer/bigClass'
+// import adminlittleClass from '@/views/administer/littleClass'
+import product from '@/views/administer/product'
+
+const originalPush = Router.prototype.push
+Router.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
 Vue.use(Router)
 
@@ -59,14 +65,14 @@ export default new Router({
     children: [
       {
         path: '/admin/:id',
-        name: 'bigClass',
-        component: adminBigClass
-      },
-      {
-        path: '/admin/:id/:seriId',
-        name: 'littleClass',
-        component: adminlittleClass
+        name: 'product',
+        component: product
       }
+      // {
+      //   path: '/admin/:id/:seriId',
+      //   name: 'littleClass',
+      //   component: adminlittleClass
+      // }
     ]
   }
   ]

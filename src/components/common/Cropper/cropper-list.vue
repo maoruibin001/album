@@ -1,10 +1,10 @@
 <template>
-    <ul>
-      <li class="change" v-for="(item, key) of items" :key="key">
-        <cropperItem @change='changeImg' @deleteImg="deleteImg" :id="item.identId" :img="item.img" :index="key"></cropperItem>
+    <ul :style="styleObj">
+      <li class="change item" :style="itemStyleObj" v-for="(item, key) of items" :key="key">
+        <cropperItem @fileChange='changeImg' @deleteImg="deleteImg" :id="item.identId" :img="item.url" :index="key"></cropperItem>
       </li>
-      <li class="add">
-        <cropperItem @change='addImg' :img="newImg"></cropperItem>
+      <li class="add item" :style="itemStyleObj" >
+        <cropperItem @fileChange='addImg' :img="newImg"></cropperItem>
       </li>
     </ul>
 </template>
@@ -14,11 +14,26 @@ export default {
   components: {
     cropperItem
   },
+  props: {
+    styleObj: {
+      type: Object,
+      default: () => ({})
+    },
+    itemStyleObj: {
+      type: Object,
+      default: () => ({})
+    },
+    imgInfoList: {
+      type: Array,
+      default: () => []
+
+    }
+  },
   data () {
     return {
       identId: 0,
       newImg: '',
-      items: []
+      items: this.imgInfoList
     }
   },
   methods: {
@@ -26,16 +41,13 @@ export default {
       // this.items[info.index] = info
       this.identId++
       info.identId = this.identId
-      this.items.push(Object.assign({}, info, {
-        img: info.base64
-      }))
+      this.items.push(info)
       this.newImg = ''
+      this.$emit('fileChange', this.items)
     },
     changeImg (info) {
       const index = this.items.findIndex(e => e.identId === info.id)
-      this.items[index] = Object.assign(this.items[index], info, {
-        img: info.base64
-      })
+      this.items[index] = Object.assign(this.items[index], info)
     },
     deleteImg (info) {
       const index = this.items.findIndex(e => e.identId === info.id)
@@ -53,8 +65,10 @@ export default {
     li {
       padding: 0;
       margin: 0;
-      width: 100px;
-      height: 100px;
+      display: flex;
+      margin-right: 10px;
+      // width: 100px;
+      // height: 100px;
     }
   }
 

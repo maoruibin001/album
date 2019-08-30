@@ -6,8 +6,8 @@
 
         <transition name="shn-modal-fade">
             <div v-if="show" class="shn-modal-content">
-                <div class="shn-modal-content-box">
-                    <div class="shn-modal-content-close" @click="$emit('update:visible', false)">
+                <div class="shn-modal-content-box" :style="styleObj">
+                    <div class="shn-modal-content-close" @click="close()">
                         <span class="shn-modal-close-x">
                       X
                     </span>
@@ -63,6 +63,10 @@ export default {
     maskClosable: {
       type: Boolean,
       default: true
+    },
+    styleObj: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
