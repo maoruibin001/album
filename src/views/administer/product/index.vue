@@ -10,7 +10,7 @@
         </div>
       </div>
     </li>
-     <ProductEdit :show="showDialog" :pid="productInfo.pid"></ProductEdit>
+     <ProductEdit :show="showDialog" :pId="productInfo.pId"></ProductEdit>
      <Confirm :show="showConfirm" :title="title" @close="showConfirm=false" @ok="sure" :content="confirmContent"></Confirm>
   </ul>
 </template>

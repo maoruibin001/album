@@ -42,7 +42,7 @@
         <div class="admin-child">
             <router-view />
         </div>
-        <ProductEdit :pid="pid"></ProductEdit>
+        <ProductEdit :pId="pId"></ProductEdit>
     </div>
 </template>
 
@@ -58,7 +58,7 @@ export default {
     return {
     //   isEdit: false,
       activeId: -2,
-      pid: -1,
+      pId: -1,
       showDialog: false,
       height: window.screen.availHeight - 15
     }
@@ -73,8 +73,9 @@ export default {
   },
   mounted () {},
   methods: {
-    addProduct (pid) {
-      this.pid = pid
+    addProduct (pId) {
+      if (!pId) return
+      this.pId = pId
       const editInfo = {
         name: '',
         mainImgList: [],

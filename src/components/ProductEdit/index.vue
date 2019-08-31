@@ -15,7 +15,7 @@
 
                          <div class="item desc">
                           <div class="left">产品详情</div>
-                          <div class="right"><CropperItem :img="editInfo.descImgThumb" :url="uploadUrl" @fileChange="updateDesc"></CropperItem></div>
+                          <div class="right"><CropperItem :img="editInfo.descImg" :cropper="false" :url="uploadUrl" @fileChange="updateDesc"></CropperItem></div>
                         </div>
 
                          <div class="item gif">
@@ -59,7 +59,7 @@ import { imgUploadApi } from '@/utils/cgiConfig'
 // const uploadUrl = '/api/upload/image'
 export default {
   props: {
-    pid: {
+    pId: {
       type: Number,
       default: -1
     }
@@ -83,6 +83,11 @@ export default {
       set (val) {
         store.commit('setEditInfo', val)
       }
+    }
+  },
+  watch: {
+    isEdit (val) {
+      console.log('isEdit', val)
     }
   },
   methods: {
@@ -142,8 +147,8 @@ export default {
       if (chekckStr) {
         return toast(chekckStr)
       }
-      if (this.editInfo.pid === undefined) {
-        this.editInfo.pid = this.pid
+      if (this.editInfo.pId === undefined) {
+        this.editInfo.pId = this.pId
       }
       this.editInfo.prize = +this.editInfo.prize
       store.dispatch(this.isEdit ? 'editProduct' : 'addProduct', this.editInfo).then(() => {
