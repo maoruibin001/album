@@ -97,6 +97,8 @@ export default {
     display: flex;
     .left,.right {
       // width: 20px;
+      text-align: left;
+      margin-left: 10px;
       font-size: 12px;
       flex: 1
     }
@@ -105,7 +107,7 @@ export default {
       text-align: right;
       div {
         cursor: pointer;
-        margin-left: 10px;
+        margin-right: 10px;
         float: right;
       }
     }

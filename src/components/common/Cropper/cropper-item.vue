@@ -62,6 +62,7 @@ import { VueCropper } from 'vue-cropper'
 import modal from '../Modal'
 import Confirm from '@/components/common/Confirm'
 import { imgUploadApi } from '@/utils/cgiConfig'
+import config from '@/utils/config'
 export default {
   components: {
     VueCropper,
@@ -113,7 +114,7 @@ export default {
     return {
       confirmContent: `确定要删除此张图片吗？`,
       showConfirm: false,
-      host: 'http://localhost:3433',
+      host: config.HOST,
       originPath: this.isImg ? '/api/download/image/origin/' : '/api/download/file/origin/',
       thumbPath: this.isImg ? '/api/download/image/thumbnail/' : '',
       isMaskShow: false,
