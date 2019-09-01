@@ -1,4 +1,4 @@
-const prefex = '/album/api'
+const prefex = '/api'
 export const productApi = {
   add: {
     method: prefex + '/product'

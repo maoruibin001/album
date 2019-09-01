@@ -42,11 +42,11 @@ module.exports = {
 
     cssSourceMap: true,
     proxyTable: {
-      '/album': {
+      '/api': {
           target: 'http://localhost:3443',
           changeOrigin: true,
           pathRewrite: {
-              '^/album': '/'
+              '^/api': '/api'
           }
       }
   },
