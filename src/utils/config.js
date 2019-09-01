@@ -1,5 +1,5 @@
 export default {
   PAGESIZE: 10,
   PAGENO: 1,
-  HOST: '/'
+  HOST: 'http://' + location.host
 }
