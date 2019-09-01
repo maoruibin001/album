@@ -1,27 +1,28 @@
+const prefex = '/album/api'
 export const productApi = {
   add: {
-    method: '/api/product'
+    method: prefex + '/product'
   },
   delete: {
-    method: '/api/product/:id',
+    method: prefex + '/product/:id',
     type: 'delete'
   },
   edit: {
-    method: '/api/product/:id',
+    method: prefex + '/product/:id',
     type: 'put'
   },
   getAll: {
-    method: '/api/products',
+    method: prefex + '/products',
     type: 'get'
   },
   get: {
-    method: '/api/product/:id',
+    method: prefex + '/product/:id',
     type: 'get'
   }
 }
 
 export const imgUploadApi = {
   upload: {
-    method: '/api/upload/image'
+    method: prefex + '/upload/image'
   }
 }
