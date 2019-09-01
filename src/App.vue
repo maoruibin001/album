@@ -19,13 +19,13 @@ export default {
   },
   computed: {
     showNavbar () {
-      return ['/', '/notice', '/home', '/collect', '/classify', '/littleClass'].indexOf(this.$route.path) !== -1
+      return ['/', '/notice', '/home', '/collect', '/classify'].indexOf(this.$route.path) !== -1 || this.$route.path.indexOf('/littleClass') !== -1
     },
     needGap () {
       return ['/', '/notice', '/home', '/collect', '/classify'].indexOf(this.$route.path) !== -1
     },
     notNeedGap () {
-      return this.$route.path.indexOf('/admin') !== -1
+      return this.$route.path.indexOf('/admin') !== -1 || this.$route.path.indexOf('/detail') !== -1
     }
   },
   data () {

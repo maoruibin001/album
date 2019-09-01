@@ -11,6 +11,7 @@ const store = new Vuex.Store({
     productList: [],
     productInfo: {},
     editDiologShow: false,
+    isEdit: false,
     editInfo: {
       name: '',
       mainImgList: [],
@@ -19,8 +20,7 @@ const store = new Vuex.Store({
       // gifImgThumb: '',
       gifImg: '',
       originFile: '',
-      prize: 0,
-      isEdit: false
+      prize: 0
     }
   },
   mutations: {

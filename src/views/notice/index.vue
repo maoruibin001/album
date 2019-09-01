@@ -1,14 +1,14 @@
 <template>
     <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
         <div class="notice-box">
-            <div class="item" v-for="(item, i) in items" :key="i">
+            <div class="item" @click="toDetail(item)" v-for="(item, i) in items" :key="i">
                 <div class="title">
                     <div class="icon iconfont" :class="item.icon"></div>
-                    <div class="text">{{item.title}}</div>
-                    <div class="date">{{item.createTime | getGapDay}}</div>
+                    <div class="text">{{item.name}}</div>
+                    <div class="date">{{item.modifyDate | getGapDay}}</div>
                 </div>
                 <div class="content">
-                    <img :src="item.url" :ref="item.id" style="width: 100%;max-width: 600px;" alt />
+                    <img :src="item.mainImgList[0].url" :ref="item.id" style="width: 100%;max-width: 600px;" alt />
                 </div>
             </div>
         </div>
@@ -17,53 +17,67 @@
 
 <script>
 import { getGapDay } from '@/utils/date'
-const items = []
-for (let i = 0; i < 11; i++) {
-  const time = Date.now() - (i) * 24 * 60 * 60 * 1000 * 0.2
-  items.push({
-    id: i,
-    title: '默认最新的一个',
-    icon: 'iconzu3',
-    url: `static/test/${(i % 5) + 1}.jpg`,
-    createTime: time,
-    str: new Date(time).toLocaleTimeString()
-  })
-}
+import store from 'store/front'
 export default {
   components: {},
   data () {
     return {
-      items: items.map(e => ({ ...e })),
-      itemWidth: 0
+      // items: items.map(e => ({ ...e })),
+      // itemWidth: 0
     }
+  },
+  computed: {
+    items () {
+      const items = store.state.productList.map(e => {
+        return {
+          ...e,
+          width: 130,
+          height: 140
+        }
+      })
+      return items
+    },
+    isEnd () {
+      return store.state.isEnd
+    },
+    pageNo () {
+      return store.state.pageNo
+    }
+  },
+  created () {
+    store.dispatch('getProducts', {
+      pId: -100
+    })
   },
   filters: {
     getGapDay
   },
-  mounted () {
-    this.$nextTick(() => {})
-  },
   methods: {
+    toDetail (item) {
+      if (!item.id) return
+      this.$router.push('/detail/' + item.id)
+    },
     refresh (done) {
       setTimeout(() => {
         done()
       }, 1500)
     },
     loadmore (done) {
-      if (typeof done !== 'function') {
-        done = function () {}
-      }
-      setTimeout(() => {
-        this.items.push.apply(
-          this.items,
-          items.map(e => {
-            return Object.assign(e, {
-              id: e.id + 100
-            })
-          })
-        )
-        done()
-      }, 1500)
+      done()
+      // if (typeof done !== 'function') {
+      //   done = function () {}
+      // }
+      // setTimeout(() => {
+      //   this.items.push.apply(
+      //     this.items,
+      //     items.map(e => {
+      //       return Object.assign(e, {
+      //         id: e.id + 100
+      //       })
+      //     })
+      //   )
+      //   done()
+      // }, 1500)
     }
   }
 }

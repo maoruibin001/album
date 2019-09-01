@@ -1,3 +1,7 @@
+body {
+  overflow:auto;   /* 用于 android4+，或其他设备 */
+  -webkit-overflow-scrolling:touch;    /* 用于 ios5+ */  
+}
 .btn {
   position: relative;
   display: inline-block;

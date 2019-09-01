@@ -2,11 +2,11 @@
     <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
         <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
             <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
-                <div class="item">
-                    <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
+                <div class="item" @click="toDetail(item)">
+                    <img :src="item.mainImgList[0].url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
                     <div class="item-desc">
                         <div class="left">
-                            {{item.desc}}
+                            {{item.name}}
                         </div>
                         <div class="right">
                             ...&nbsp;
@@ -22,17 +22,18 @@
 import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import { getImageHeightByWidth } from '@/utils'
+import store from 'store/front'
 // import ItemFactory from "@/components/common/js/item-factory";
-const items = []
-for (let i = 0; i < 11; i++) {
-  items.push({
-    id: i,
-    width: 130,
-    height: 140,
-    url: `static/test/${(i % 5) + 1}.jpg`,
-    desc: '新款产品质量监督局'
-  })
-}
+// const items = []
+// for (let i = 0; i < 11; i++) {
+//   items.push({
+//     id: i,
+//     width: 130,
+//     height: 140,
+//     url: `static/test/${(i % 5) + 1}.jpg`,
+//     desc: '新款产品质量监督局'
+//   })
+// }
 export default {
   components: {
     WaterFall,
@@ -40,16 +41,40 @@ export default {
   },
   data () {
     return {
-      items: items.map(e => ({ ...e })),
-      itemWidth: 0
+      // items: items.map(e => ({ ...e }))
+      // itemWidth: 0
     }
   },
-  mounted () {
-    this.$nextTick(() => {})
+  computed: {
+    items () {
+      const items = store.state.productList.map(e => {
+        return {
+          ...e,
+          width: 130,
+          height: 140
+        }
+      })
+      return items
+    },
+    isEnd () {
+      return store.state.isEnd
+    },
+    pageNo () {
+      return store.state.pageNo
+    }
+  },
+  created () {
+    store.dispatch('getProducts', {
+      pId: -100
+    })
   },
   methods: {
+    toDetail (item) {
+      if (!item.id) return
+      this.$router.push('/detail/' + item.id)
+    },
     getCurrentHeight (item) {
-      getImageHeightByWidth(item.url, item.width).then(height => {
+      getImageHeightByWidth((item.mainImgList[0] || {}).url, item.width).then(height => {
         item.height = height
       })
     },
@@ -62,20 +87,21 @@ export default {
       }, 1500)
     },
     loadmore (done) {
+      done()
       if (typeof done !== 'function') {
         done = function () {}
       }
-      setTimeout(() => {
-        this.items.push.apply(
-          this.items,
-          items.map(e => {
-            return Object.assign(e, {
-              id: e.id + 100
-            })
-          })
-        )
-        done()
-      }, 1500)
+      // setTimeout(() => {
+      //   this.items.push.apply(
+      //     this.items,
+      //     items.map(e => {
+      //       return Object.assign(e, {
+      //         id: e.id + 100
+      //       })
+      //     })
+      //   )
+      //   done()
+      // }, 1500)
     }
   }
 }

@@ -1,14 +1,14 @@
 <template>
     <div class="container">
-        <Slider @chooseItem="chooseItem"></Slider>
+        <Slider @chooseItem="chooseItem" :list="navList"></Slider>
         <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" class="scrollerbox" :on-infinite="loadmore">
             <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
                 <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
-                    <div class="item">
+                    <div class="item" @click="toDetail(item)">
                         <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
                         <div class="item-desc">
                             <div class="left">
-                                {{item.desc}}
+                                {{item.name}}
                             </div>
                             <div class="right">
                                 ...&nbsp;
@@ -26,17 +26,18 @@ import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import Slider from '@/components/Slider'
 import { getImageHeightByWidth } from '@/utils'
+import store from 'store/front'
 // import ItemFactory from "@/components/common/js/item-factory";
-const items = []
-for (let i = 0; i < 11; i++) {
-  items.push({
-    id: i,
-    width: 130,
-    height: 140,
-    url: `static/test/${(i % 5) + 1}.jpg`,
-    desc: '新款产品质量监督局'
-  })
-}
+// const items = []
+// for (let i = 0; i < 11; i++) {
+//   items.push({
+//     id: i,
+//     width: 130,
+//     height: 140,
+//     url: `static/test/${(i % 5) + 1}.jpg`,
+//     desc: '新款产品质量监督局'
+//   })
+// }
 export default {
   components: {
     WaterFall,
@@ -45,21 +46,81 @@ export default {
   },
   data () {
     return {
-      items: items.map(e => ({ ...e })),
+      id: this.$route.params.id,
+      // items: list,
       itemWidth: 0
     }
   },
-  mounted () {
-    this.$nextTick(() => {})
+  computed: {
+    // productInfo () {
+    //   return store.state.productInfo || {}
+    // },
+    navList () {
+      const info = store.state.productInfo || {}
+      console.log('info', info)
+      return info.children
+    },
+    list () {
+      // const info = store.state.productInfo || {}
+      return store.state.productImgList
+    },
+    isEnd () {
+      return store.state.isEnd
+    },
+    pageNo () {
+      return store.state.pageNo
+    },
+    pageSize () {
+      return store.state.pageSize
+    },
+    items () {
+      return this.handlerList(this.list)
+    }
   },
+  created () {
+    store.dispatch('getProduct', {
+      id: this.id
+    })
+  },
+
   methods: {
+    toDetail (item) {
+      if (!item.id) return
+      this.$router.push('/detail/' + item.id)
+    },
+    handlerList (list) {
+      let _list = []
+      list.forEach(e => {
+        _list = _list.concat(e.mainImgList.map(item => {
+          return {
+            ...e,
+            ...item,
+            width: 130,
+            height: 140,
+            name: e.name
+          }
+        }))
+      })
+
+      return _list.slice((this.pageNo - 1) * this.pageSize)
+    },
     chooseItem (item) {
-      const index1 = Math.floor(Math.random() * (items.length - 1))
-      const index2 = Math.floor(Math.random() * (items.length - 1))
-      this.items = items.slice(Math.min(index1, index2), Math.max(index1, index2))
+      if (item.name === '全部') {
+        store.dispatch('getProduct', {
+          id: this.id
+        })
+        return
+      }
+      store.commit('setPageNo', 1)
+      store.commit('setProductImgList', [item])
+      // this.items =
+      // const index1 = Math.floor(Math.random() * (items.length - 1))
+      // const index2 = Math.floor(Math.random() * (items.length - 1))
+      // this.items = this.items.slice(Math.min(index1, index2), Math.max(index1, index2))
     },
     getCurrentHeight (item) {
-      getImageHeightByWidth(item.url, item.width).then(height => {
+      item.mainImgList = item.mainImgList || [{}]
+      getImageHeightByWidth((item.mainImgList[0] || {}).url, item.width).then(height => {
         item.height = height
       })
     },
@@ -72,20 +133,8 @@ export default {
       }, 2500)
     },
     loadmore (done) {
-      if (typeof done !== 'function') {
-        done = function () {}
-      }
-      setTimeout(() => {
-        this.items.push.apply(
-          this.items,
-          items.map(e => {
-            return Object.assign(e, {
-              id: e.id + 100
-            })
-          })
-        )
-        done()
-      }, 1500)
+      done()
+      // store.commit('setPageNo', this.pageNo + 1)
     }
   }
 }

@@ -3,7 +3,7 @@
     <div class="search-container">
       <div class="search-box">
         <span class="search-icon iconfont iconzu7"></span>
-        <input type="text" class="search-input" placeholder="查找">
+        <input type="text" @change="search(searchText)" v-model="searchText" class="search-input" placeholder="查找">
       </div>
       <div class="person-box" @click="toUser()">
         <div class="person-icon iconfont iconfuhao"></div>
@@ -14,70 +14,72 @@
 
 <script>
 import { isPc } from '@/utils'
+import store from 'store/front'
 export default {
   data () {
     return {
       isPc: isPc(),
-      navList: [
-        {
-          id: 1,
-          text: '首页',
-          isActive: true,
-          iconClass: 'iconzu3',
-          path: '/',
-          params: {}
-        },
-        {
-          id: 2,
-          text: '分类',
-          isActive: false,
-          iconClass: 'iconzu2',
-          path: '/classify',
-          params: {}
-        },
-        {
-          id: 3,
-          text: '通知',
-          isActive: false,
-          iconClass: 'iconzu1',
-          path: '/notice',
-          params: {}
-        },
-        {
-          id: 4,
-          text: '收藏',
-          isActive: false,
-          iconClass: 'iconzu4',
-          path: '/collect',
-          params: {}
-        }
-      ]
+      searchText: ''
     }
   },
   computed: {
     needGap () {
       return ['/', '/notice', '/home', '/collect', '/classify'].indexOf(this.$route.path) !== -1
+    },
+    homeItems () {
+      const items = store.state.productList.map(e => {
+        return {
+          ...e,
+          width: 130,
+          height: 140
+        }
+      })
+      return items
     }
   },
-  created () {
-    const path = this.$route.path
-    if (path) {
-      const activeItem = this.navList.find(e => e.path === path)
-      activeItem && this.chooseItem(activeItem, true)
-    }
-  },
+
   methods: {
     toUser () {
       this.$router.push('/user')
     },
-    chooseItem (item, isDisable) {
-      if (!item) return
 
-      this.navList.forEach(e => {
-        e.isActive = e.id === item.id
-      })
-      if (isDisable) return
-      this.$router.push(item.path)
+    search (text) {
+      const path = this.$route.path
+      switch (path) {
+        case '/':
+        case '/classify':
+          store.dispatch('getProducts', {
+            pId: -1
+          }).then(() => {
+            if (!text) {
+              store.commit('setProductList', this.homeItems)
+              return
+            }
+            const items = this.homeItems.filter(e => {
+              return e.name.indexOf(text) !== -1
+            })
+            store.commit('setProductList', items)
+          })
+          break
+        case '/collect':
+        case '/notice':
+          store.dispatch('getProducts', {
+            pId: -100
+          }).then(() => {
+            if (!text) {
+              store.commit('setProductList', this.homeItems)
+              return
+            }
+            const items = this.homeItems.filter(e => {
+              return e.name.indexOf(text) !== -1
+            })
+            store.commit('setProductList', items)
+          })
+          break
+        default:
+          break
+      }
+      console.log()
     }
   }
 }

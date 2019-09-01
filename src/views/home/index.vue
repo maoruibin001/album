@@ -1,12 +1,12 @@
 <template>
-    <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
+    <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%">
         <WaterFall @loadmore="loadmore" class="item-box">
             <waterfall-slot v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
-                <div class="item">
-                    <Carousel :item="item"></Carousel>
+                <div class="item" @click="toDetail(item)">
+                    <Carousel :item="item.mainImgList || []"></Carousel>
                     <div class="item-desc">
                         <div class="left">
-                            {{item.desc}}
+                            {{item.name}}
                         </div>
                         <div class="right">
                             ...&nbsp;
@@ -23,32 +23,69 @@
 import WaterFall from '@/components/common/WaterFall'
 import Carousel from '@/components/common/Carousel'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
-import ItemFactory from '@/components/common/js/item-factory'
+// import ItemFactory from '@/components/common/js/item-factory'
+import store from 'store/front'
 export default {
   components: {
     WaterFall,
     WaterfallSlot,
     Carousel
   },
+  created () {
+    store.dispatch('getProducts', {
+      pId: -1
+    })
+  },
+  computed: {
+    items () {
+      const items = store.state.productList.map(e => {
+        return {
+          ...e,
+          width: 130,
+          height: 140
+        }
+      })
+      return items
+    },
+    isEnd () {
+      return store.state.isEnd
+    },
+    pageNo () {
+      return store.state.pageNo
+    }
+  },
   data () {
     return {
-      items: ItemFactory.get(20)
+      // items: ItemFactory.get(20)
     }
   },
   methods: {
+    toDetail (item) {
+      if (!item.id) return
+      this.$router.push('/detail/' + item.id)
+    },
     refresh (done) {
-      setTimeout(() => {
+      store.dispatch('getProducts', {
+        pId: -1
+      }).then(() => {
         done()
-      }, 1500)
+      }).catch(() => {
+        done()
+      })
     },
     loadmore (done) {
-      if (typeof done !== 'function') {
-        done = function () {}
+    // done()
+      if (this.isEnd) {
+        return
       }
-      setTimeout(() => {
-        this.items.push.apply(this.items, ItemFactory.get(30))
+      store.dispatch('getProducts', {
+        pageNo: this.pageNo + 1,
+        pId: -1
+      }).then(() => {
         done()
-      }, 1500)
+      }).catch(() => {
+        done()
+      })
     }
   }
 }

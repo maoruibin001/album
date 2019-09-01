@@ -1,7 +1,7 @@
 <template>
     <div class="detail-box">
         <div class="detail-img">
-            <img src="/static/test/1.jpg" class="w-100" alt="">
+            <img :src="productInfo.descImg" class="w-100" alt="">
         </div>
         <div class="detail-btns">
             <div class="btn left" @click="show3d=true">
@@ -12,20 +12,32 @@
             </div>
         </div>
 
-        <ImgDialog :url='url' v-if="show3d" @close="show3d=false"></ImgDialog>
+        <ImgDialog :url='productInfo.gifImg' v-if="show3d" @close="show3d=false"></ImgDialog>
     </div>
 </template>
 
 <script>
 import ImgDialog from '@/components/common/ImgDialog'
+import store from 'store/front'
 export default {
   components: {
     ImgDialog
   },
   data () {
     return {
+      id: this.$route.params.id,
       url: '/static/test/2.jpg',
       show3d: false
+    }
+  },
+  created () {
+    store.dispatch('getProduct', {
+      id: this.id
+    })
+  },
+  computed: {
+    productInfo () {
+      return store.state.productInfo || {}
     }
   }
 

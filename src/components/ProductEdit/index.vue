@@ -1,5 +1,5 @@
 <template>
-    <modal :visible.sync="editDiologShow" :styleObj="styleObj" @close="editDiologShow=false">
+    <modal :visible.sync="editDiologShow" :styleObj="styleObj" @close="editDiologShow=false" :title="isEdit ?'编辑' : '新增'">
         <template v-slot:body>
                     <div class="form-container">
                       <div class="form">
@@ -83,11 +83,6 @@ export default {
       set (val) {
         store.commit('setEditInfo', val)
       }
-    }
-  },
-  watch: {
-    isEdit (val) {
-      console.log('isEdit', val)
     }
   },
   methods: {

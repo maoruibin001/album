@@ -48,13 +48,13 @@ export default new Router({
     component: user
   },
   {
-    path: '/littleClass',
+    path: '/:id/littleClass',
     name: 'littleClass',
     component: littleClass
   },
 
   {
-    path: '/detail',
+    path: '/detail/:id',
     name: 'detail',
     component: detail
   },

@@ -1,7 +1,7 @@
 <template>
 <div class="slider-container">
     <ul class="slider-box">
-      <li class="slider-item" @click="chooseItem(item)" :class="{active: item.isActive}" v-for="(item, i) of list" :key="i" :style="{backgroundColor: item.color}">{{item.title}}</li>
+      <li class="slider-item" @click="chooseItem(item, sliderList)" :class="{active: item.isActive}" v-for="(item, i) of sliderList" :key="i" :style="{backgroundColor: item.color}">{{item.name}}</li>
     </ul>
 </div>
 
@@ -9,33 +9,56 @@
 
 <script>
 const COLORSET = ['#252B18', '#4A3901', '#40481F', '#8B7450', '#647C02']
-const list = []
-list.push({
-  id: 0,
-  title: '全部',
-  color: COLORSET[0],
-  isActive: true
-})
-for (let i = 1; i < 25; i++) {
-  list.push({
-    id: i,
-    title: '产品小系列' + i,
-    color: COLORSET[i] || COLORSET[i % (COLORSET.length)],
-    isActive: false
-  })
-}
+// const list = []
+// list.push({
+//   id: 0,
+//   title: '全部',
+//   color: COLORSET[0],
+//   isActive: true
+// })
+// for (let i = 1; i < 25; i++) {
+//   list.push({
+//     id: i,
+//     title: '产品小系列' + i,
+//     color: COLORSET[i] || COLORSET[i % (COLORSET.length)],
+//     isActive: false
+//   })
+// }
 export default {
-  data () {
-    return {
-      list: list
+  props: {
+    list: {
+      type: Array,
+      default: () => []
     }
   },
-  mounted () {
-
+  data () {
+    return {
+      sliderList: this.handlerList(this.list)
+    }
+  },
+  watch: {
+    list (val) {
+      this.sliderList = this.handlerList(this.list)
+    }
   },
   methods: {
-    chooseItem (item) {
-      this.list.forEach(e => {
+    handlerList (list) {
+      return [{
+        id: 0,
+        name: '全部',
+        color: COLORSET[0],
+        isActive: true
+      }
+      ].concat(list.map((e, i) => {
+        return {
+          ...e,
+          color: COLORSET[i] || COLORSET[i % (COLORSET.length)],
+          isActive: false
+        }
+      }))
+    },
+    chooseItem (item, list) {
+      list.forEach(e => {
         e.isActive = (e.id === item.id)
       })
       this.$emit('chooseItem', item)

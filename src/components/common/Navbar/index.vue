@@ -74,7 +74,7 @@ export default {
         }
         if (e.children) {
           for (const ele of e.children) {
-            if (ele.path === path) {
+            if (path.indexOf(ele.path) !== -1) {
               activeItem = e
               break
             }
