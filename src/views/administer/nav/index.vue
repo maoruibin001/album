@@ -206,8 +206,7 @@ ul {
     margin-left: -12px;
     overflow: auto;
     display: flex;
-    // width: 100%; // height: 100%;
-    width: 250px;
+    width: 100%; // height: 100%;
     // min-height: 400px;
     background-color: #ccc;
     .admin-nav {
