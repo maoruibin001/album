@@ -15,12 +15,12 @@
 
                          <div class="item desc">
                           <div class="left">产品详情</div>
-                          <div class="right"><CropperItem :img="editInfo.descImg" :cropper="false"  @fileChange="updateDesc" @deleteImg="deleteDesc()"></CropperItem></div>
+                          <div class="right"><CropperItem :img="editInfo.descImg" :thumbImg="editInfo.descImgThumb" :cropper="false"  @fileChange="updateDesc" @deleteImg="deleteDesc()"></CropperItem></div>
                         </div>
 
                          <div class="item gif">
                           <div class="left">产品动图</div>
-                          <div class="right"><CropperItem :cropper="false" :img="editInfo.gifImg" @fileChange="updateGif" @deleteImg="deleteGif()"></CropperItem></div>
+                          <div class="right"><CropperItem :cropper="false" :img="editInfo.gifImg"  @fileChange="updateGif" @deleteImg="deleteGif()"></CropperItem></div>
                         </div>
 
                          <div class="item file">
@@ -95,6 +95,7 @@ export default {
     },
     updateGif (data) {
       this.editInfo.gifImg = data.url
+      this.editInfo.gifImgThumb = data.thumbUrl
     },
     updateFile (data) {
       this.editInfo.originFile = data.url
@@ -105,6 +106,7 @@ export default {
     },
     deleteGif (data) {
       this.editInfo.gifImg = ''
+      this.editInfo.gifImgThumb = ''
     },
     checkEditInfo () {
       const checkList = [

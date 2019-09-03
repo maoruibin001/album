@@ -1,7 +1,7 @@
 <template>
   <ul>
     <li class="item" @click="showDialog(item)" v-for="(item, index) of productList" :key="index">
-      <img :src="item.mainImgList && item.mainImgList[0].url" alt="">
+      <img :src="item.mainImgList && item.mainImgList[0].thumbUrl" alt="">
       <div class="desc">
         <div class="left" :title="item.name">{{item.name | ellipsis(6)}}</div>
         <div class="right">

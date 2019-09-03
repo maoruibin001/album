@@ -27,7 +27,7 @@ const store = new Vuex.Store({
       mainImgList: [],
       descImgThumb: '',
       descImg: '',
-      // gifImgThumb: '',
+      gifImgThumb: '',
       gifImg: '',
       originFile: '',
       prize: 0

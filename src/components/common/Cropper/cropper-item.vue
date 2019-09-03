@@ -1,6 +1,6 @@
 <template>
     <div style="width: 100%;height: 100%;">
-        <div class="item-container" :style="{backgroundImage: `url(${img})`, ...styleObj}">
+        <div class="item-container" :style="{backgroundImage: `url(${thumbImg || img})`, ...styleObj}">
             <input type="file" @mouseenter="showMask()" ref="input" class="file" @change="fileChange($event)">
             <div v-if="!img" class="tip">
                 <img :src="addIcon" alt="">
@@ -83,6 +83,11 @@ export default {
       default: () => imgUploadApi.uploadImg
     },
     img: {
+      type: String,
+      default: ''
+    },
+    thumbImg: {
+      type: String,
       default: ''
     },
     addIcon: {

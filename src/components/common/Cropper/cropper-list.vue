@@ -1,7 +1,7 @@
 <template>
     <ul :style="styleObj">
       <li class="change item" :style="itemStyleObj" v-for="(item, key) of items" :key="key">
-        <cropperItem @fileChange='changeImg' @deleteImg="deleteImg" :id="item.identId" :img="item.url" :index="key"></cropperItem>
+        <cropperItem @fileChange='changeImg' @deleteImg="deleteImg" :id="item.identId" :img="item.url" :thumbImg="item.thumbUrl" :index="key"></cropperItem>
       </li>
       <li class="add item" :style="itemStyleObj" >
         <cropperItem @fileChange='addImg' :img="newImg"></cropperItem>
