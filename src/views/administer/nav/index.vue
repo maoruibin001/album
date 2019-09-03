@@ -4,7 +4,7 @@
             <div class="title">
                 <div class="text" @click="addSeries()">+产品管理</div>
             </div>
-            <div class="content">
+            <div class="content" :style="{height: height - 120 + 'px'}">
                 <ul>
                     <li class="big-class"  v-for='(item, index) of list' :key='index'>
                         <div class="title-box" :class="{active: item.bid === activeId}">
@@ -80,7 +80,7 @@ export default {
       activeId: -2,
       pId: -1,
       showDialog: false,
-      height: window.screen.availHeight - 15
+      height: window.screen.availHeight - 10
     }
   },
   computed: {
@@ -202,8 +202,12 @@ ul {
 }
 
 .admin-container {
+    // margin-bottom: 50px;
+    margin-left: -12px;
+    overflow: auto;
     display: flex;
-    width: 100%; // height: 100%;
+    // width: 100%; // height: 100%;
+    width: 250px;
     // min-height: 400px;
     background-color: #ccc;
     .admin-nav {
@@ -226,6 +230,8 @@ ul {
             }
         }
         .content {
+            overflow: auto;
+            margin-bottom: 50px;
             .active {
                 color:#c10000;
             }

@@ -11,7 +11,6 @@ export function ajax (params = {}, data) {
   }
   if (type === 'post' || type === 'put') {
     return Vue.http[type](method, data).then(data => {
-      debugger
       if (data.retCode === 0) {
         return data
       } else {
