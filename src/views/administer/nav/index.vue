@@ -246,7 +246,7 @@ ul {
                     .right {
                         // flex: 1; // position: absolute;
                         // right: 0;
-                        width: 180px;
+                        width: 140px;
                         // display: flex;
                         .operation {
                             float: right;
