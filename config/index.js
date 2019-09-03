@@ -42,6 +42,13 @@ module.exports = {
 
     cssSourceMap: true,
     proxyTable: {
+      '/api/download': {
+        target: 'http://localhost:3433',
+          changeOrigin: true,
+          pathRewrite: {
+              '^/api/download': '/api/download'
+          }
+      },
       '/api': {
           target: 'http://localhost:3443',
           changeOrigin: true,

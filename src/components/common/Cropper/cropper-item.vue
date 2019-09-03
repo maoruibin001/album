@@ -80,7 +80,7 @@ export default {
     },
     url: {
       type: Object,
-      default: () => imgUploadApi.upload
+      default: () => imgUploadApi.uploadImg
     },
     img: {
       default: ''
@@ -95,7 +95,7 @@ export default {
     },
     cropper: {
       type: Boolean,
-      default: true
+      default: false
     },
     fixed: {
       type: Boolean,
@@ -146,8 +146,11 @@ export default {
   methods: {
     sure () {
       this.deleteImg()
+      this.showConfirm = false
     },
     emitChange (event, data) {
+      console.log(this.isImg)
+      debugger
       if (event === 'fileChange') {
         const fmData = new FormData()
         fmData.append('file', data.blob, 'a.jpg')

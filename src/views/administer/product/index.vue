@@ -1,12 +1,15 @@
 <template>
   <ul>
-    <li class="item" @click="showDialog()" v-for="(item, i) of productInfo.mainImgList || []" :key="i">
-      <img :src="item.url" alt="">
+    <li class="item" @click="showDialog(item)" v-for="(item, index) of productList" :key="index">
+      <img :src="item.mainImgList && item.mainImgList[0].url" alt="">
       <div class="desc">
-        <div class="left">{{productInfo.name}}</div>
+        <div class="left" :title="item.name">{{item.name | ellipsis(6)}}</div>
         <div class="right">
-          <div class="move" @click.stop="move">移动</div>
-          <div class="delete" @click.stop="deleteProduct">删除</div>
+          <div class="delete" @click.stop="deleteProduct(item)">删除</div>
+          <div class="move" @click.stop="showDialog(item)">编辑</div>
+          <div class="operation" @click.stop="move(item, index, 'down', productList)" v-if="index !== productList.length - 1">后移</div>
+           <div class="operation" @click.stop="move(item, index, 'up', productList)" v-if="index !== 0">前移</div>
+
         </div>
       </div>
     </li>
@@ -24,13 +27,13 @@ export default {
     Confirm
   },
   created () {
-    store.dispatch('getProduct', {
-      id: this.id
+    store.dispatch('getProducts', {
+      lId: this.id
     })
   },
   computed: {
-    productInfo () {
-      return store.state.productInfo || {}
+    productList () {
+      return store.state.productList
     },
     id () {
       return +this.$route.params.id
@@ -38,13 +41,14 @@ export default {
   },
   watch: {
     id (val) {
-      store.dispatch('getProduct', {
-        id: this.id
+      store.dispatch('getProducts', {
+        lId: this.id
       })
     }
   },
   data () {
     return {
+      productInfo: {},
       showConfirm: false,
       title: '提示',
       confirmContent: ''
@@ -54,17 +58,30 @@ export default {
   methods: {
     sure () {
       store.dispatch('deleteProduct', {
-        id: this.id
+        id: this.productInfo.id,
+        lId: this.productInfo.lId
       }).then(() => {
         this.showConfirm = false
       })
     },
-    move () {},
-    deleteProduct () {
-      this.showConfirm = true
-      this.confirmContent = '确定删除 ' + this.productInfo.name + ' 吗？'
+    move (item, index, type, list) {
+      if (!type) return
+      const target = type === 'up' ? list[index - 1] : list[index + 1]
+      store.dispatch('moveProduct', {
+        start: item.id,
+        end: target.id,
+        lId: item.lId
+      })
     },
-    showDialog () {
+    deleteProduct (item) {
+      if (!item) return
+      this.productInfo = item
+      this.showConfirm = true
+      this.confirmContent = '确定删除 ' + item.name + ' 吗？'
+    },
+    showDialog (item) {
+      if (!item) return
+      this.productInfo = item
       store.commit('setEditing', true)
       store.commit('setEditInfo', this.productInfo)
       store.commit('setEditDiologShow', true)
@@ -105,6 +122,8 @@ export default {
     .right {
       // display: flex;
       text-align: right;
+      flex: 3;
+      width: 120px;
       div {
         cursor: pointer;
         margin-right: 10px;

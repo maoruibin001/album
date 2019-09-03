@@ -1,43 +1,16 @@
 <template>
-    <modal :visible.sync="editDiologShow" :styleObj="styleObj" @close="editDiologShow=false" :title="(isEdit ?'编辑' : '新增') + '产品'">
+    <modal :visible.sync="editDiologShow" :styleObj="styleObj" @close="editDiologShow=false" :title="(isEdit ?'编辑' : '新增') + '小系列'">
         <template v-slot:body>
                     <div class="form-container">
                       <div class="form">
                         <div class="item name">
-                          <div class="left">产品名称</div>
-                          <div class="right"><input type="text" placeholder="请输入产品名称" v-model="editInfo.name"></div>
+                          <div class="left">小系列名称</div>
+                          <div class="right"><input type="text" placeholder="请输入小系列名称" v-model="editInfo.name"></div>
                         </div>
 
-                         <div class="item main">
-                          <div class="left">产品主图</div>
-                          <div class="right"><CroppperList :imgInfoList="editInfo.mainImgList" :itemStyleObj="itemStyleObj" @fileChange="updateMainImgList"></CroppperList></div>
-                        </div>
-
-                         <div class="item desc">
-                          <div class="left">产品详情</div>
-                          <div class="right"><CropperItem :img="editInfo.descImg" :cropper="false"  @fileChange="updateDesc" @deleteImg="deleteDesc()"></CropperItem></div>
-                        </div>
-
-                         <div class="item gif">
-                          <div class="left">产品动图</div>
-                          <div class="right"><CropperItem :cropper="false" :img="editInfo.gifImg" @fileChange="updateGif" @deleteImg="deleteGif()"></CropperItem></div>
-                        </div>
-
-                         <div class="item file">
-                          <div class="left">产品原文件</div>
-                          <div class="right">
-                            <div class="upload">
-                              <button class="btn file">
-                                <CropperItem @fileChange="updateFile" :cropper="false" :styleObj="uploadStyleObj" addIcon="" tip="点击上传" :isImg="false"></CropperItem>
-                                </button>
-                              <span :class="{active: editInfo.originFile}">已上传</span>/
-                              <span :class="{active: !editInfo.originFile}">未上传</span>
-                            </div>
-                            <div class="prize">
-                              <span>原文件价格</span>
-                              <input class="btn danger" v-model="editInfo.prize"> 元
-                            </div>
-                          </div>
+                          <div class="item desc">
+                          <div class="left">小系列主图</div>
+                          <div class="right"><CropperItem :img="editInfo.mainImg" :cropper="false" :url="uploadUrl" @fileChange="updateMain" @deleteImg="deleteMain()"></CropperItem></div>
                         </div>
 
                         <div class="item" @click="save()">
@@ -51,87 +24,62 @@
 
 <script>
 import modal from '@/components/common/Modal'
-import CroppperList from '@/components/common/Cropper/cropper-list'
+// import CroppperList from '@/components/common/Cropper/cropper-list'
 import CropperItem from '@/components/common/Cropper/cropper-item'
 import store from 'store/admin'
 import { toast } from '@/utils'
 import { imgUploadApi } from '@/utils/cgiConfig'
 // const uploadUrl = '/api/upload/image'
 export default {
-  props: {
-    pId: {
-      type: Number,
-      default: -1
-    }
-  },
+  // props: {
+  //   bId: {
+  //     type: Number,
+  //     default: -1
+  //   }
+  // },
   computed: {
     editDiologShow: {
       get () {
-        return store.state.editDiologShow
+        return store.state.lEditDiologShow
       },
       set (val) {
-        store.commit('setEditDiologShow', val)
+        store.commit('setLEditDiologShow', val)
       }
     },
     isEdit () {
-      return store.state.isEdit
+      return store.state.isLEdit
     },
     editInfo: {
       get () {
-        return store.state.editInfo
+        return store.state.lEditInfo
       },
       set (val) {
-        store.commit('setEditInfo', val)
+        store.commit('setLEditInfo', val)
       }
     }
   },
   methods: {
-    updateMainImgList (data) {
-      this.editInfo.mainImgList = data
+    deleteMain () {
+      this.editInfo.mainImg = ''
+      this.editInfo.mainImgThumb = ''
     },
-    updateDesc (data) {
-      this.editInfo.descImgThumb = data.thumbUrl
-      this.editInfo.descImg = data.url
-    },
-    updateGif (data) {
-      this.editInfo.gifImg = data.url
-    },
-    updateFile (data) {
-      this.editInfo.originFile = data.url
-    },
-    deleteDesc (data) {
-      this.editInfo.descImgThumb = ''
-      this.editInfo.descImg = ''
-    },
-    deleteGif (data) {
-      this.editInfo.gifImg = ''
+    updateMain (data) {
+      console.log(JSON.stringify(this.editInfo))
+      console.log('data is: ', data)
+      this.editInfo.mainImg = data.url
+      this.editInfo.mainImgThumb = data.thumbUrl
     },
     checkEditInfo () {
       const checkList = [
         {
           key: 'name',
           type: 'string',
-          value: '产品名称不能为空'
+          value: '小系列名称不能为空'
         },
         {
-          key: 'mainImgList',
-          type: 'array',
-          value: '产品主图不能为空'
-        },
-        {
-          key: 'descImg',
+          key: 'mainImg',
           type: 'string',
-          value: '产品详情不能为空'
-        },
-        {
-          key: 'gifImg',
-          type: 'string',
-          value: '产品动图不能为空'
-        },
-        {
-          key: 'originFile',
-          type: 'string',
-          value: '产品原型不能为空'
+          value: '小系列主图不能为空'
         }
       ]
       for (const item of checkList) {
@@ -148,29 +96,26 @@ export default {
       if (chekckStr) {
         return toast(chekckStr)
       }
-      if (this.editInfo.pId === undefined) {
-        this.editInfo.pId = this.pId
-      }
-      this.editInfo.prize = +this.editInfo.prize
-      store.dispatch(this.isEdit ? 'editProduct' : 'addProduct', this.editInfo).then(() => {
+      store.dispatch(this.isEdit ? 'editLseries' : 'addLseries', this.editInfo).then(() => {
         this.editDiologShow = false
       })
     }
   },
   components: {
     modal,
-    CroppperList,
+    // CroppperList,
     CropperItem
   },
   data () {
     return {
       descImg: '',
-      uploadFileUrl: imgUploadApi.uploadFile,
+      uploadUrl: imgUploadApi.uploadImg,
       // product: {},
       dialogShow: this.show,
       isUpload: false,
       styleObj: {
-        backgroundColor: '#EBEBEB'
+        backgroundColor: '#EBEBEB',
+        height: '300px'
       },
       itemStyleObj: {
         width: '60px',
