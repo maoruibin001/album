@@ -90,6 +90,7 @@ export default {
   },
   created () {
     store.dispatch('getBserieses')
+    store.dispatch('getProducts')
   },
   methods: {
     addLseries (id) {
