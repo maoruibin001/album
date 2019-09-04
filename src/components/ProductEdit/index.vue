@@ -28,7 +28,7 @@
                           <div class="right">
                             <div class="upload">
                               <button class="btn file">
-                                <CropperItem @fileChange="updateFile" :cropper="false" :styleObj="uploadStyleObj" addIcon="" tip="点击上传" :isImg="false"></CropperItem>
+                                <CropperItem @fileChange="updateFile" :url="uploadFileUrl" :cropper="false" :styleObj="uploadStyleObj" addIcon="" tip="点击上传" :isImg="false"></CropperItem>
                                 </button>
                               <span :class="{active: editInfo.originFile}">已上传</span>/
                               <span :class="{active: !editInfo.originFile}">未上传</span>

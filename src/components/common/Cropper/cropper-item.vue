@@ -154,11 +154,9 @@ export default {
       this.showConfirm = false
     },
     emitChange (event, data) {
-      console.log(this.isImg)
-      debugger
       if (event === 'fileChange') {
         const fmData = new FormData()
-        fmData.append('file', data.blob, 'a.jpg')
+        fmData.append('file', data.blob)
         this.$ajax(this.url, fmData).then(ret => {
           this.$emit(event, Object.assign(ret, {
             url: this.host + this.originPath + ret.filename,
