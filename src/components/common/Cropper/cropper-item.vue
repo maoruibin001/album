@@ -74,6 +74,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    type: {
+      type: String,
+      default: 'image'
+    },
     id: {
       type: Number,
       default: -1
@@ -157,7 +161,11 @@ export default {
       if (event === 'fileChange') {
         const fmData = new FormData()
         fmData.append('file', data.blob)
-        this.$ajax(this.url, fmData).then(ret => {
+        let url = this.url
+        if (data.blob.type && data.blob.type.indexOf('image/') !== -1 && this.type === 'file') {
+          url = imgUploadApi.uploadImg
+        }
+        this.$ajax(url, fmData).then(ret => {
           this.$emit(event, Object.assign(ret, {
             url: this.host + this.originPath + ret.filename,
             thumbUrl: this.host + this.thumbPath + ret.filename
