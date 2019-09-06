@@ -1,4 +1,5 @@
 <template>
+<div>
     <div class="admin-container" :style="{height: height + 'px'}">
         <div class="admin-nav">
             <div class="title">
@@ -46,12 +47,16 @@
         <div class="admin-child">
             <router-view />
         </div>
-        <ProductEdit :pId="pId"></ProductEdit>
-        <BseriesEdit></BseriesEdit>
-        <LseriesEdit></LseriesEdit>
-        <Confirm :show="showConfirm" @close="showConfirm=false" @ok="sure" :content="confirmContent"></Confirm>
-
     </div>
+     <div style="position: absolute">
+          <ProductEdit :pId="pId"></ProductEdit>
+          <BseriesEdit></BseriesEdit>
+          <LseriesEdit></LseriesEdit>
+          <Confirm :show="showConfirm" @close="showConfirm=false" @ok="sure" :content="confirmContent"></Confirm>
+
+        </div>
+</div>
+
 </template>
 
 <script>
@@ -90,7 +95,6 @@ export default {
   },
   created () {
     store.dispatch('getBserieses')
-    store.dispatch('getProducts')
   },
   methods: {
     addLseries (id) {
@@ -212,7 +216,8 @@ ul {
     background-color: #ccc;
     .admin-nav {
         position: relative;
-        width: 250px; // flex: 1; // display: flex;
+        flex: 0 0 250px;
+        // width: 250px; // flex: 1; // display: flex;
         flex-direction: column;
         .title {
             // flex: 2;
@@ -299,7 +304,8 @@ ul {
         }
     }
     .admin-child {
-        flex: 5;
+        // flex: 0 0 5;
+        flex-grow: 1;
         background-color: #fff;
     }
 }

@@ -147,6 +147,7 @@ const store = new Vuex.Store({
     deleteBseries ({ commit, dispatch }, params) {
       return ajax(bSeriesApi.delete, params).then(ret => {
         dispatch('getBserieses')
+        dispatch('getProducts')
         toast('删除大类成功')
       }).catch(e => {
         toast(e.msg || e.body.msg)
@@ -194,6 +195,7 @@ const store = new Vuex.Store({
     deleteLseries ({ commit, dispatch }, params) {
       return ajax(lSeriesApi.delete, params).then(ret => {
         dispatch('getBserieses')
+        dispatch('getProducts', params)
         toast('删除小类成功')
       }).catch(e => {
         toast(e.msg || e.body.msg)
