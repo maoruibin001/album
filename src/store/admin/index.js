@@ -137,6 +137,13 @@ const store = new Vuex.Store({
         toast(e.msg || e.body.msg)
       })
     },
+    getSomeProducts ({ commit, dispatch }, params) {
+      return ajax(productApi.getSome, params).then(({ data }) => {
+        commit('setProductList', data.products)
+      }).catch(e => {
+        toast(e.msg || e.body.msg)
+      })
+    },
     getProducts ({ commit, dispatch }, params) {
       return ajax(productApi.getAll, params).then(({ data }) => {
         commit('setProductList', data.products)
@@ -192,6 +199,13 @@ const store = new Vuex.Store({
         toast(e.msg || e.body.msg)
       })
     },
+    getSomeBserieses ({ commit, dispatch }, params) {
+      return ajax(bSeriesApi.getSome, params).then(({ data }) => {
+        commit('setBseriesList', data.bseries)
+      }).catch(e => {
+        toast(e.msg || e.body.msg)
+      })
+    },
     getBseries ({ commit, dispatch }, params) {
       return ajax(bSeriesApi.get, params).then(({ data }) => {
         commit('setBseriesInfo', data)
@@ -240,6 +254,7 @@ const store = new Vuex.Store({
         toast(e.msg || e.body.msg)
       })
     },
+    // getSomeLserieses () {},
     getLseries ({ commit, dispatch }, params) {
       return ajax(lSeriesApi.get, params).then(({ data }) => {
         commit('setLseriesInfo', data)

@@ -17,7 +17,7 @@
 
 <script>
 import { getGapDay } from '@/utils/date'
-import store from 'store/front'
+import store from 'store/admin'
 export default {
   components: {},
   data () {
@@ -45,8 +45,7 @@ export default {
     }
   },
   created () {
-    store.dispatch('getProducts', {
-    })
+    store.dispatch('getProducts', {})
   },
   filters: {
     getGapDay

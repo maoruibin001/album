@@ -1,6 +1,7 @@
 <template>
-    <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%">
-        <WaterFall @loadmore="loadmore" class="box" @reflowed="reflowed" :fixed-height="true" line="v">
+    <scroller refreshText="刷新中..." :on-refresh="refresh">
+      <div  style="padding: 0 10px;">
+        <WaterFall @loadmore="loadmore" class="box" @reflowed="reflowed" :fixed-height="true" line="v"  height="95%">
             <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
                 <div class="item" @click="toLittleClass(item)">
                     <div class="title">{{item.name}}</div>
@@ -19,6 +20,8 @@
 
             </waterfall-slot>
         </WaterFall>
+      </div>
+
     </scroller>
 </template>
 
@@ -52,7 +55,7 @@ export default {
         return {
           ...e,
           width: 130,
-          height: 140
+          height: 120
         }
       })
       return items

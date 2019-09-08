@@ -18,6 +18,10 @@ export const bSeriesApi = {
     method: prefex + '/bserieses',
     type: 'get'
   },
+  getSome: {
+    method: prefex + '/someBserieses',
+    type: 'get'
+  },
   get: {
     method: prefex + '/bseries/:bId',
     type: 'get'
@@ -37,6 +41,10 @@ export const lSeriesApi = {
   edit: {
     method: prefex + '/lseries/:lId',
     type: 'put'
+  },
+  getSome: {
+    method: prefex + '/someLserieses',
+    type: 'get'
   },
   getAll: {
     method: prefex + '/lserieses',
@@ -61,6 +69,10 @@ export const productApi = {
   edit: {
     method: prefex + '/product/:id',
     type: 'put'
+  },
+  getSome: {
+    method: prefex + '/someProducts',
+    type: 'get'
   },
   getAll: {
     method: prefex + '/products',

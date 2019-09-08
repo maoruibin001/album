@@ -14,7 +14,7 @@
 
 <script>
 import { isPc } from '@/utils'
-import store from 'store/front'
+import store from 'store/admin'
 export default {
   data () {
     return {
@@ -48,32 +48,14 @@ export default {
       switch (path) {
         case '/':
         case '/classify':
-          store.dispatch('getProducts', {
-            pId: -1
-          }).then(() => {
-            if (!text) {
-              store.commit('setProductList', this.homeItems)
-              return
-            }
-            const items = this.homeItems.filter(e => {
-              return e.name.indexOf(text) !== -1
-            })
-            store.commit('setProductList', items)
+          store.dispatch('getSomeBserieses', {
+            key: text
           })
           break
         case '/collect':
         case '/notice':
-          store.dispatch('getProducts', {
-            pId: -100
-          }).then(() => {
-            if (!text) {
-              store.commit('setProductList', this.homeItems)
-              return
-            }
-            const items = this.homeItems.filter(e => {
-              return e.name.indexOf(text) !== -1
-            })
-            store.commit('setProductList', items)
+          store.dispatch('getSomeProducts', {
+            key: text
           })
           break
         default:
