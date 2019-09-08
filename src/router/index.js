@@ -8,6 +8,7 @@ import collect from '@/views/collect'
 import notice from '@/views/notice'
 import user from '@/views/user'
 import detail from '@/views/detail'
+import detailGif from '@/views/detailGif'
 // import upload from '@/components/common/Cropper/cropper-list'
 import adminNav from '@/views/administer/nav'
 // import adminBigClass from '@/views/administer/bigClass'
@@ -58,6 +59,12 @@ export default new Router({
     path: '/detail/:id',
     name: 'detail',
     component: detail
+  },
+
+  {
+    path: '/detail/:id/gif',
+    name: 'detailGif',
+    component: detailGif
   },
   {
     path: '/admin',

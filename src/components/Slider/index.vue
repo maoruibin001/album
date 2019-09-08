@@ -44,7 +44,7 @@ export default {
   methods: {
     handlerList (list) {
       return [{
-        id: 0,
+        lId: 0,
         name: '全部',
         color: COLORSET[0],
         isActive: true
@@ -59,7 +59,7 @@ export default {
     },
     chooseItem (item, list) {
       list.forEach(e => {
-        e.isActive = (e.id === item.id)
+        e.isActive = (e.lId === item.lId)
       })
       this.$emit('chooseItem', item)
     }

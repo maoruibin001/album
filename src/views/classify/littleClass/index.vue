@@ -5,7 +5,7 @@
             <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
                 <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
                     <div class="item" @click="toDetail(item)">
-                        <img :src="item.url" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
+                        <img :src="item.mainImgList[0].thumbUrl" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt />
                         <div class="item-desc">
                             <div class="left">
                                 {{item.name}}
@@ -26,7 +26,7 @@ import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import Slider from '@/components/Slider'
 import { getImageHeightByWidth } from '@/utils'
-import store from 'store/front'
+import store from 'store/admin'
 // import ItemFactory from "@/components/common/js/item-factory";
 // const items = []
 // for (let i = 0; i < 11; i++) {
@@ -47,7 +47,7 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      // items: list,
+      items: [],
       itemWidth: 0
     }
   },
@@ -56,13 +56,13 @@ export default {
     //   return store.state.productInfo || {}
     // },
     navList () {
-      const info = store.state.productInfo || {}
+      const info = store.state.bseriesInfo || {}
       console.log('info', info)
       return info.children
     },
     list () {
       // const info = store.state.productInfo || {}
-      return store.state.productImgList
+      return store.state.productList || []
     },
     isEnd () {
       return store.state.isEnd
@@ -72,15 +72,23 @@ export default {
     },
     pageSize () {
       return store.state.pageSize
-    },
-    items () {
-      return this.handlerList(this.list)
     }
+    // items () {
+    //   return this.handlerList(this.list)
+    // }
   },
   created () {
-    store.dispatch('getProduct', {
-      id: this.id
+    store.dispatch('getBseries', {
+      bId: this.id
     })
+    store.dispatch('getProducts', {
+      bId: this.id
+    })
+  },
+  watch: {
+    list (val) {
+      this.items = this.handlerList(val)
+    }
   },
 
   methods: {
@@ -89,30 +97,27 @@ export default {
       this.$router.push('/detail/' + item.id)
     },
     handlerList (list) {
-      let _list = []
-      list.forEach(e => {
-        _list = _list.concat(e.mainImgList.map(item => {
-          return {
-            ...e,
-            ...item,
-            width: 130,
-            height: 140,
-            name: e.name
-          }
-        }))
+      return list.map(e => {
+        return {
+          ...e,
+          width: 130,
+          height: 140
+        }
       })
-
-      return _list.slice((this.pageNo - 1) * this.pageSize)
     },
     chooseItem (item) {
       if (item.name === '全部') {
-        store.dispatch('getProduct', {
-          id: this.id
+        store.dispatch('getProducts', {
+          bId: this.id
         })
-        return
+      } else {
+        store.commit('setPageNo', 1)
+        // store.commit('setProductImgList', [item])
+        store.dispatch('getProducts', {
+          lId: item.lId
+        })
       }
-      store.commit('setPageNo', 1)
-      store.commit('setProductImgList', [item])
+
       // this.items =
       // const index1 = Math.floor(Math.random() * (items.length - 1))
       // const index2 = Math.floor(Math.random() * (items.length - 1))

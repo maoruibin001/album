@@ -46,7 +46,6 @@ export default {
   },
   created () {
     store.dispatch('getProducts', {
-      pId: -100
     })
   },
   filters: {

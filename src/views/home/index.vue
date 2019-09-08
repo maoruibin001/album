@@ -3,7 +3,7 @@
         <WaterFall @loadmore="loadmore" class="item-box">
             <waterfall-slot v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
                 <div class="item" @click="toDetail(item)">
-                    <Carousel :item="item.mainImgList || []"></Carousel>
+                    <Carousel :item="item.children || []" @itemChange="itemChange"></Carousel>
                     <div class="item-desc">
                         <div class="left">
                             {{item.name}}
@@ -24,7 +24,7 @@ import WaterFall from '@/components/common/WaterFall'
 import Carousel from '@/components/common/Carousel'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 // import ItemFactory from '@/components/common/js/item-factory'
-import store from 'store/front'
+import store from 'store/admin'
 export default {
   components: {
     WaterFall,
@@ -32,13 +32,11 @@ export default {
     Carousel
   },
   created () {
-    store.dispatch('getProducts', {
-      pId: -1
-    })
+    store.dispatch('getBserieses')
   },
   computed: {
-    items () {
-      const items = store.state.productList.map(e => {
+    list () {
+      const items = store.state.bseriesList.map(e => {
         return {
           ...e,
           width: 130,
@@ -54,12 +52,25 @@ export default {
       return store.state.pageNo
     }
   },
+  watch: {
+    list (val) {
+      this.items = val
+    }
+  },
   data () {
     return {
-      // items: ItemFactory.get(20)
+      items: this.list
     }
   },
   methods: {
+    itemChange (item) {
+      this.items.forEach(e => {
+        if (e.bId === item.bId) {
+          e.height = item.height
+        }
+      })
+      // debugger
+    },
     toDetail (item) {
       if (!item.id) return
       this.$router.push('/detail/' + item.id)
@@ -94,6 +105,7 @@ export default {
 <style scoped>
 .item-box {
     margin-left: -8px;
+    /* height: 110%; */
 }
 
 .item {
@@ -102,10 +114,13 @@ export default {
     left: 12px;
     right: 0;
     bottom: 22px;
+    /* height: 90% */
 }
 
 .item-desc {
     display: flex;
+    /* position: absolute;
+    bottom: 0; */
 }
 
 .left {

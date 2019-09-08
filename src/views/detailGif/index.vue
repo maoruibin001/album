@@ -1,16 +1,16 @@
 <template>
     <div class="detail-box">
         <div class="detail-img">
-            <img :src="productInfo.descImg" class="w-100" alt="">
+            <img :src="productInfo.gifImg" class="w-100" alt="">
         </div>
-        <div class="detail-btns">
-            <div class="btn left" @click="toDetailGif">
+        <!-- <div class="detail-btns">
+            <div class="btn left" @click="show3d=true">
                 产品3维展示
             </div>
             <div class="btn right">
                 购买方案原型
             </div>
-        </div>
+        </div> -->
 
         <!-- <ImgDialog :url='productInfo.gifImg' v-if="show3d" @close="show3d=false"></ImgDialog> -->
     </div>
@@ -26,8 +26,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      url: '/static/test/2.jpg'
-      // show3d: false
+      url: '/static/test/2.jpg',
+      show3d: false
     }
   },
   created () {
@@ -38,11 +38,6 @@ export default {
   computed: {
     productInfo () {
       return store.state.productInfo || {}
-    }
-  },
-  methods: {
-    toDetailGif () {
-      this.$router.push(this.$route.path + '/gif')
     }
   }
 

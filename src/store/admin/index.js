@@ -8,6 +8,8 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+    pageNo: 1,
+    isEnd: false,
     bseriesList: [],
     bseriesInfo: {},
     lseriesList: [],
@@ -88,6 +90,12 @@ const store = new Vuex.Store({
     },
     setLseriesInfo (state, info = {}) {
       state.lseriesInfo = info
+    },
+    setPageNo (state, pageNo = 1) {
+      state.pageNo = pageNo
+    },
+    setIsEnd (state, isEnd = false) {
+      state.isEdit = isEnd
     }
     // setEditInfo (state, info = {}) {
     //   state.editInfo = info

@@ -22,7 +22,7 @@
 import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import { getImageHeightByWidth } from '@/utils'
-import store from 'store/front'
+import store from 'store/admin'
 // import ItemFactory from "@/components/common/js/item-factory";
 // const items = []
 // for (let i = 0; i < 11; i++) {
@@ -41,12 +41,13 @@ export default {
   },
   data () {
     return {
+      items: []
       // items: items.map(e => ({ ...e }))
       // itemWidth: 0
     }
   },
   computed: {
-    items () {
+    list () {
       const items = store.state.productList.map(e => {
         return {
           ...e,
@@ -63,9 +64,14 @@ export default {
       return store.state.pageNo
     }
   },
+  watch: {
+    list (val) {
+      this.items = val
+    }
+  },
   created () {
     store.dispatch('getProducts', {
-      pId: -100
+      collect: 1
     })
   },
   methods: {
