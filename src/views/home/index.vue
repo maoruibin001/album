@@ -1,9 +1,11 @@
 <template>
     <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%">
-        <WaterFall @loadmore="loadmore" class="item-box">
-            <waterfall-slot v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
-                <div class="item" @click="toDetail(item)">
-                    <Carousel :item="item.children || []" @itemChange="itemChange"></Carousel>
+        <div style="padding: 0 10px;">
+            <WaterFall @loadmore="loadmore" class="item-box">
+                <waterfall-slot v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
+                    <div class="item" @click="toDetail(item)" v-if="item.mainImgList && item.mainImgList.length > 0">
+                        <Carousel :item="item.mainImgList || []" @itemChange="itemChange" :id="item.id"></Carousel>
+                    </div>
                     <div class="item-desc">
                         <div class="left">
                             {{item.name}}
@@ -12,10 +14,9 @@
                             ...&nbsp;
                         </div>
                     </div>
-                </div>
-
-            </waterfall-slot>
-        </WaterFall>
+                </waterfall-slot>
+            </WaterFall>
+        </div>
     </scroller>
 </template>
 
@@ -25,6 +26,7 @@ import Carousel from '@/components/common/Carousel'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 // import ItemFactory from '@/components/common/js/item-factory'
 import store from 'store/admin'
+import { wait } from '@/utils'
 export default {
   components: {
     WaterFall,
@@ -32,11 +34,11 @@ export default {
     Carousel
   },
   created () {
-    store.dispatch('getBserieses')
+    store.dispatch('getProducts')
   },
   computed: {
     list () {
-      const items = store.state.bseriesList.map(e => {
+      const items = store.state.productList.map(e => {
         return {
           ...e,
           width: 130,
@@ -50,6 +52,9 @@ export default {
     },
     pageNo () {
       return store.state.pageNo
+    },
+    isLoading () {
+      return store.state.isLoading
     }
   },
   watch: {
@@ -65,7 +70,7 @@ export default {
   methods: {
     itemChange (item) {
       this.items.forEach(e => {
-        if (e.bId === item.bId) {
+        if (e.id === item.id) {
           e.height = item.height
         }
       })
@@ -76,22 +81,22 @@ export default {
       this.$router.push('/detail/' + item.id)
     },
     refresh (done) {
-      store.dispatch('getProducts', {
-        pId: -1
-      }).then(() => {
+      wait(store.dispatch('getBserieses')).then(() => {
         done()
-      }).catch(() => {
+      }).catch(e => {
         done()
       })
     },
     loadmore (done) {
-    // done()
-      if (this.isEnd) {
+      console.log('loadmore')
+      if (this.isEnd || this.isLoading) {
+        done()
         return
       }
+      console.log('loading')
+      store.commit('setIsLoading', true)
       store.dispatch('getProducts', {
-        pageNo: this.pageNo + 1,
-        pId: -1
+        pageNo: this.pageNo + 1
       }).then(() => {
         done()
       }).catch(() => {
@@ -105,7 +110,8 @@ export default {
 <style scoped>
 .item-box {
     margin-left: -8px;
-    /* height: 110%; */
+    position: relative;
+    height: 110%;
 }
 
 .item {
@@ -114,13 +120,16 @@ export default {
     left: 12px;
     right: 0;
     bottom: 22px;
+    overflow: hidden;
     /* height: 90% */
 }
 
 .item-desc {
     display: flex;
-    /* position: absolute;
-    bottom: 0; */
+    position: absolute;
+    width: 94%;
+    bottom: 5px;
+    left: 13px;
 }
 
 .left {

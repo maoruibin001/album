@@ -38,3 +38,31 @@ export function toast (msg, duration) {
     setTimeout(function () { document.body.removeChild(m) }, d * 1000)
   }, duration)
 }
+
+export function wait (promise, time = 1000) {
+  const waitPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve()
+    }, time)
+  })
+  return Promise.all([promise, waitPromise]).then(data => {
+    return data[0]
+  })
+  // return new Promise((resolve, reject) => {
+  //   promise.then(data => {
+  //     ret = data
+  //     if (isOk) {
+  //       return resolve(data)
+  //     } else {
+  //       isOk = true
+  //     }
+  //   })
+  //   setTimeout(() => {
+  //     if (isOk) {
+  //       return resolve(ret)
+  //     } else {
+  //       isOk = true
+  //     }
+  //   }, time)
+  // })
+}

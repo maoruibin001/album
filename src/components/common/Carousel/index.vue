@@ -12,7 +12,7 @@
       <img style="width: 100%;border-radus: 5px;" :src="items[0].thumbUrl" alt />
     </slide> -->
     <slide v-for="(e, i) of items" :key="i" :style="{zIndex: zIndex}">
-      <img :id="'pic' + e.lId" @load="getImgSize(e, i)" style="border-radus: 5px;" :style="e.style" :src="e.mainImgThumb" alt />
+      <img :id="'pic' + e.Id" @load="getImgSize(e, i)" style="border-radus: 5px;" :style="e.style" :src="e.thumbUrl" alt />
     </slide>
   </carousel>
 </template>
@@ -28,7 +28,7 @@ import { getImageHeightByWidth } from '@/utils'
 // }
 
 export default {
-  props: ['item', 'data'],
+  props: ['item', 'data', 'id'],
   components: {
     Carousel,
     Slide
@@ -57,16 +57,15 @@ export default {
       // })
     },
     getImgSize (item, i) {
-      getImageHeightByWidth(item.mainImgThumb, 130, 0, 10).then(height => {
-        item.height = height
-        const isMoreBig = height > this.maxHeight
-        this.maxHeight = isMoreBig ? height : this.maxHeight
-        this.maxHeightItem = isMoreBig ? item : this.maxHeightItem
-        this.index--
-        if (this.index === 0) {
-          console.log('maxHeight: ', this.maxHeight, this.maxHeightItem)
-          this.$emit('itemChange', this.maxHeightItem)
-          this.reHeight()
+      getImageHeightByWidth(item.thumbUrl, 130, 0, 15).then(height => {
+        // const isMoreBig = height > this.maxHeight
+        // this.maxHeight = isMoreBig ? height : this.maxHeight
+        // this.maxHeightItem = isMoreBig ? item : this.maxHeightItem
+        // this.index--
+        if (i === 0) {
+          item.height = height
+          // console.log('maxHeight: ', this.maxHeight, this.maxHeightItem)
+          this.$emit('itemChange', { ...item, id: this.id })
 
           // item.style.height = '376px'
         }

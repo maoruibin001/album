@@ -61,21 +61,16 @@ export default {
       }, 1500)
     },
     loadmore (done) {
-      done()
-      // if (typeof done !== 'function') {
-      //   done = function () {}
-      // }
-      // setTimeout(() => {
-      //   this.items.push.apply(
-      //     this.items,
-      //     items.map(e => {
-      //       return Object.assign(e, {
-      //         id: e.id + 100
-      //       })
-      //     })
-      //   )
-      //   done()
-      // }, 1500)
+      if (this.isEnd) {
+        return
+      }
+      store.dispatch('getProducts', {
+        pageNo: this.pageNo + 1
+      }).then(() => {
+        done()
+      }).catch(() => {
+        done()
+      })
     }
   }
 }

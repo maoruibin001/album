@@ -40,7 +40,7 @@ const store = new Vuex.Store({
       state.productList = state.productList.concat(list)
     },
     setIsEnd (state, isEnd = false) {
-      state.isEdit = isEnd
+      state.isEnd = isEnd
     },
     setPageNo (state, pageNo = 1) {
       state.pageNo = pageNo

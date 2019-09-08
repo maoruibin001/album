@@ -11,9 +11,11 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "mescroll.js": "^1.4.1",
     "vue": "^2.5.2",
     "vue-carousel": "^0.18.0",
     "vue-cropper": "^0.4.9",
+    "vue-loadmore": "^2.0.0",
     "vue-pull-to-refresh": "^1.1.4",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",

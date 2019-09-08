@@ -4,12 +4,28 @@ import Vue from 'vue'
 import { ajax } from '@/utils/ajax'
 import { productApi, bSeriesApi, lSeriesApi } from '@/utils/cgiConfig'
 import { toast } from '@/utils'
+import config from '@/utils/config'
 Vue.use(Vuex)
 
+function preRequest (state, params) {
+  const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params || {}
+
+  return { ...params, pageNo, pageSize }
+}
+
+function afterResponse (commit, data, params) {
+  const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params || {}
+  commit('setIsEnd', !!data.isEnd)
+  commit('setPageNo', pageNo)
+  commit('setPageSize', pageSize)
+  commit('setIsLoading', false)
+}
 const store = new Vuex.Store({
   state: {
     pageNo: 1,
+    pageSize: config.PAGESIZE,
     isEnd: false,
+    isLoading: false,
     bseriesList: [],
     bseriesInfo: {},
     lseriesList: [],
@@ -94,15 +110,15 @@ const store = new Vuex.Store({
     setPageNo (state, pageNo = 1) {
       state.pageNo = pageNo
     },
+    setPageSize (state, pageSize = 10) {
+      state.pageSize = pageSize
+    },
     setIsEnd (state, isEnd = false) {
-      state.isEdit = isEnd
+      state.isEnd = isEnd
+    },
+    setIsLoading (state, isLoading = false) {
+      state.isLoading = isLoading
     }
-    // setEditInfo (state, info = {}) {
-    //   state.editInfo = info
-    // },
-    // setEditDiologShow (state, show = false) {
-    //   state.editDiologShow = show
-    // }
   },
   actions: {
     deleteProduct ({ commit, dispatch }, params) {
@@ -138,22 +154,39 @@ const store = new Vuex.Store({
       })
     },
     getSomeProducts ({ commit, dispatch }, params) {
+      // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(productApi.getSome, params).then(({ data }) => {
         commit('setProductList', data.products)
+        afterResponse(commit, data, params)
+        // commit('setIsEnd', !!data.isEnd)
+        // commit('setPageNo', pageNo)
+        // commit('setPageSize', pageSize)
       }).catch(e => {
         toast(e.msg || e.body.msg)
       })
     },
     getProducts ({ commit, dispatch }, params) {
+      params = preRequest(params)
+      console.log('params:', params)
+      // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(productApi.getAll, params).then(({ data }) => {
         commit('setProductList', data.products)
+        afterResponse(commit, data, params)
+        // commit('setIsEnd', !!data.isEnd)
+        // commit('setPageNo', pageNo)
+        // commit('setPageSize', pageSize)
       }).catch(e => {
         toast(e.msg || e.body.msg)
       })
     },
     getProduct ({ commit, dispatch }, params) {
+      // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(productApi.get, params).then(({ data }) => {
         commit('setProductInfo', data)
+        afterResponse(commit, data, params)
+        // commit('setIsEnd', !!data.isEnd)
+        // commit('setPageNo', pageNo)
+        // commit('setPageSize', pageSize)
       }).catch(e => {
         toast(e.msg || e.body.msg)
       })
@@ -193,22 +226,37 @@ const store = new Vuex.Store({
       })
     },
     getBserieses ({ commit, dispatch }, params) {
+      // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(bSeriesApi.getAll, params).then(({ data }) => {
         commit('setBseriesList', data.bseries)
+        afterResponse(commit, data, params)
+        // commit('setIsEnd', !!data.isEnd)
+        // commit('setPageNo', pageNo)
+        // commit('setPageSize', pageSize)
       }).catch(e => {
         toast(e.msg || e.body.msg)
       })
     },
     getSomeBserieses ({ commit, dispatch }, params) {
+      // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(bSeriesApi.getSome, params).then(({ data }) => {
         commit('setBseriesList', data.bseries)
+        afterResponse(commit, data, params)
+        // commit('setIsEnd', !!data.isEnd)
+        // commit('setPageNo', pageNo)
+        // commit('setPageSize', pageSize)
       }).catch(e => {
         toast(e.msg || e.body.msg)
       })
     },
     getBseries ({ commit, dispatch }, params) {
+      // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(bSeriesApi.get, params).then(({ data }) => {
         commit('setBseriesInfo', data)
+        afterResponse(commit, data, params)
+        // commit('setIsEnd', !!data.isEnd)
+        // commit('setPageNo', pageNo)
+        // commit('setPageSize', pageSize)
       }).catch(e => {
         toast(e.msg || e.body.msg)
       })
@@ -248,8 +296,10 @@ const store = new Vuex.Store({
       })
     },
     getLserieses ({ commit, dispatch }, params) {
+      // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(lSeriesApi.getAll, params).then(({ data }) => {
         commit('setLseriesList', data.lseries)
+        afterResponse(commit, data, params)
       }).catch(e => {
         toast(e.msg || e.body.msg)
       })
@@ -258,6 +308,7 @@ const store = new Vuex.Store({
     getLseries ({ commit, dispatch }, params) {
       return ajax(lSeriesApi.get, params).then(({ data }) => {
         commit('setLseriesInfo', data)
+        afterResponse(commit, data, params)
       }).catch(e => {
         toast(e.msg || e.body.msg)
       })

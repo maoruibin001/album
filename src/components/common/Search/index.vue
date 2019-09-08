@@ -46,12 +46,13 @@ export default {
     search (text) {
       const path = this.$route.path
       switch (path) {
-        case '/':
+        // case '/':
         case '/classify':
           store.dispatch('getSomeBserieses', {
             key: text
           })
           break
+        case '/':
         case '/collect':
         case '/notice':
           store.dispatch('getSomeProducts', {
