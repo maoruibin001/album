@@ -7,7 +7,7 @@ import { toast } from '@/utils'
 import config from '@/utils/config'
 Vue.use(Vuex)
 
-function preRequest (state, params) {
+function preRequest (params) {
   const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params || {}
 
   return { ...params, pageNo, pageSize }
