@@ -1,39 +1,16 @@
 <template>
-    <div>
-        <WaterFall @loadmore="loadmore" class="item-box" :line-gap="200">
-            <waterfall-slot v-for="(item, index) in productList" :width="item.width" :height="item.height" :order="index" :key="item.index"  move-class="item-move">
-                <div class="item">
-                    <img style="width: 100%" :src="item.mainImgList && item.mainImgList[0].thumbUrl" alt="" @load="getCurrentHeight(item)">
-                    <div class="desc">
-                        <div class="left" :title="item.name">{{item.name | ellipsis(6)}}</div>
-                        <div class="right">
-                            <div class="delete" @click.stop="deleteProduct(item)">删除</div>
-                            <div class="move" @click.stop="showDialog(item)">编辑</div>
-                            <div class="operation" @click.stop="move(item, index, 'down', items)" v-if="index !== items.length - 1">后移</div>
-                            <div class="operation" @click.stop="move(item, index, 'up', items)" v-if="index !== 0">前移</div>
-                        </div>
-                    </div>
+    <div style="height: 100%;position: relative;">
+        <waterfall :imgsArr="items" :maxCols="4" ref="waterfall" :loadingDotStyle="{}">
+            <div class="desc" slot-scope="props">
+                <div class="left" :title="props.value.name">{{props.value.name | ellipsis(6)}}</div>
+                <div class="right">
+                    <div class="delete" @click.stop="deleteProduct(props.value)">删除</div>
+                    <div class="move" @click.stop="showDialog(props.value)">编辑</div>
+                    <div class="operation" @click.stop="move(props.value, props.index, 'down', items)" v-if="props.index !== items.length - 1">后移</div>
+                    <div class="operation" @click.stop="move(props.value, props.index, 'up', items)" v-if="props.index !== 0">前移</div>
                 </div>
-
-            </waterfall-slot>
-        </WaterFall>
-        <!-- <ul>
-                    <li class="item" @click="showDialog(item)" v-for="(item, index) of productList" :key="index">
-                        <img :src="item.mainImgList && item.mainImgList[0].thumbUrl" alt="">
-                        <div class="desc">
-                            <div class="left" :title="item.name">{{item.name | ellipsis(6)}}</div>
-                            <div class="right">
-                                <div class="delete" @click.stop="deleteProduct(item)">删除</div>
-                                <div class="move" @click.stop="showDialog(item)">编辑</div>
-                                <div class="operation" @click.stop="move(item, index, 'down', productList)" v-if="index !== productList.length - 1">后移</div>
-                                <div class="operation" @click.stop="move(item, index, 'up', productList)" v-if="index !== 0">前移</div>
-
-                            </div>
-                        </div>
-                    </li>
-                    <ProductEdit :show="showDialog" :pId="productInfo.pId"></ProductEdit>
-                    <Confirm :show="showConfirm" :title="title" @close="showConfirm=false" @ok="sure" :content="confirmContent"></Confirm>
-                </ul> -->
+            </div>
+        </waterfall>
         <ProductEdit :show="showDialog" :pId="productInfo.pId"></ProductEdit>
         <Confirm :show="showConfirm" :title="title" @close="showConfirm=false" @ok="sure" :content="confirmContent"></Confirm>
     </div>
@@ -44,26 +21,31 @@ import store from 'store/admin'
 import ProductEdit from '@/components/ProductEdit'
 import Confirm from '@/components/common/Confirm'
 
-import WaterFall from '@/components/common/WaterFall'
-import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+// import WaterFall from '@/components/common/WaterFall'
+// import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import { getImageHeightByWidth } from '@/utils'
 export default {
   components: {
     ProductEdit,
-    Confirm,
-    WaterFall,
-    WaterfallSlot
+    Confirm
+    // WaterFall,
+    // WaterfallSlot
   },
   created () {
     store.dispatch('getProducts', {
-      lId: this.id
+      lId: this.id,
+      pageSize: 1000
     })
+  },
+  mounted () {
+    this.$refs.waterfall.waterfallOver()
   },
   computed: {
     items () {
       const items = store.state.productList.map(e => {
         return {
           ...e,
+          src: e.mainImgList[0].thumbUrl,
           width: 700,
           height: 200
         }
@@ -85,10 +67,15 @@ export default {
     },
     items (val) {
       this.productList = val
+      if (!val || val.length === 0) {
+        this.$refs.waterfall.waterfallOver()
+      }
     }
   },
   data () {
     return {
+      imgsArr: [],
+      group: 0, // request param
       productInfo: {},
       showConfirm: false,
       title: '提示',
@@ -98,6 +85,11 @@ export default {
     }
   },
   methods: {
+    getData () {
+      // store.dispatch('getProducts', {
+      //   lId: this.id
+      // })
+    },
     getCurrentHeight (item) {
       if (!item.mainImgList || !item.mainImgList[0]) return
       getImageHeightByWidth((item.mainImgList[0] || {}).thumbUrl, item.width).then(height => {
@@ -156,6 +148,9 @@ export default {
         width: 100%;
         border-radius: 10px;
     }
+
+}
+
     .desc {
         position: absolute;
         left: 0;
@@ -164,20 +159,23 @@ export default {
         height: 30px;
         line-height: 30px;
         display: flex;
+        flex-direction: row;
+        color: #fff;
         .left,
         .right {
             // width: 20px;
-            text-align: left;
-            // margin-left: 10px;
+            text-align: left; // margin-left: 10px;
             font-size: 12px;
             flex: 1
         }
+        .left {
+          margin-left: 20px;
+        }
         .right {
             // display: flex;
-            text-align: right;
-            // flex: 6;
-            flex: 0 0 110px;
-            // width: 120px;
+            text-align: right; // flex: 6;
+            flex: 0 0 110px; // width: 120px;
+            margin-right: 10px;
             div {
                 cursor: pointer;
                 margin-right: 2px;
@@ -185,5 +183,4 @@ export default {
             }
         }
     }
-}
 </style>

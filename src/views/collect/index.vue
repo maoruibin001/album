@@ -15,6 +15,7 @@
                 </div>
             </waterfall-slot>
         </WaterFall>
+        <nodata v-if="isEnd"></nodata>
     </scroller>
 </template>
 
@@ -23,17 +24,6 @@ import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import { getImageHeightByWidth } from '@/utils'
 import store from 'store/admin'
-// import ItemFactory from "@/components/common/js/item-factory";
-// const items = []
-// for (let i = 0; i < 11; i++) {
-//   items.push({
-//     id: i,
-//     width: 130,
-//     height: 140,
-//     url: `static/test/${(i % 5) + 1}.jpg`,
-//     desc: '新款产品质量监督局'
-//   })
-// }
 export default {
   components: {
     WaterFall,
@@ -42,8 +32,6 @@ export default {
   data () {
     return {
       items: []
-      // items: items.map(e => ({ ...e }))
-      // itemWidth: 0
     }
   },
   computed: {
@@ -71,7 +59,6 @@ export default {
   },
   created () {
     store.dispatch('getProducts', {
-      collect: 1
     })
   },
   methods: {
@@ -97,17 +84,6 @@ export default {
       if (typeof done !== 'function') {
         done = function () {}
       }
-      // setTimeout(() => {
-      //   this.items.push.apply(
-      //     this.items,
-      //     items.map(e => {
-      //       return Object.assign(e, {
-      //         id: e.id + 100
-      //       })
-      //     })
-      //   )
-      //   done()
-      // }, 1500)
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <Slider @chooseItem="chooseItem" :list="navList"></Slider>
-        <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" class="scrollerbox" :on-infinite="loadmore">
+        <scroller ref="scroller" refreshText="刷新中..." :on-refresh="refresh" height="95%" class="scrollerbox" :on-infinite="loadmore">
             <WaterFall @loadmore="loadmore" @reflowed="reflowed" class="item-box">
                 <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
                     <div class="item" @click="toDetail(item)">
@@ -17,6 +17,7 @@
                     </div>
                 </waterfall-slot>
             </WaterFall>
+            <nodata v-if="isEnd"></nodata>
         </scroller>
     </div>
 </template>
@@ -25,19 +26,9 @@
 import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import Slider from '@/components/Slider'
-import { getImageHeightByWidth } from '@/utils'
+import { getImageHeightByWidth, wait } from '@/utils'
 import store from 'store/admin'
-// import ItemFactory from "@/components/common/js/item-factory";
-// const items = []
-// for (let i = 0; i < 11; i++) {
-//   items.push({
-//     id: i,
-//     width: 130,
-//     height: 140,
-//     url: `static/test/${(i % 5) + 1}.jpg`,
-//     desc: '新款产品质量监督局'
-//   })
-// }
+
 export default {
   components: {
     WaterFall,
@@ -78,7 +69,8 @@ export default {
   },
   created () {
     store.dispatch('getBseries', {
-      bId: this.id
+      bId: this.id,
+      pageSize: 100
     })
     store.dispatch('getProducts', {
       bId: this.id
@@ -132,13 +124,31 @@ export default {
       // this.itemWidth = $(".slot-item").width();
     },
     refresh (done) {
-      setTimeout(() => {
+      wait(store.dispatch('getProducts', {
+        bId: this.id
+      })).then(() => {
         done()
-      }, 2500)
+      }).catch(e => {
+        done()
+      })
     },
     loadmore (done) {
-      done()
-      // store.commit('setPageNo', this.pageNo + 1)
+      if (this.isEnd) {
+        this.$refs.scroller.finishInfinite()
+        return
+      }
+      if (this.isLoading) {
+        return
+      }
+      store.commit('setIsLoading', true)
+      wait(store.dispatch('getProducts', {
+        pageNo: this.pageNo + 1,
+        bId: this.id
+      })).then(() => {
+        done()
+      }).catch(e => {
+        done()
+      })
     }
   }
 }
@@ -148,8 +158,9 @@ export default {
 .container {
     margin-top: 72px;
 }
+
 .scrollerbox {
-  top: 72px !important;
+    top: 72px !important;
 }
 
 .item-box {

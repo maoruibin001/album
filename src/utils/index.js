@@ -39,7 +39,7 @@ export function toast (msg, duration) {
   }, duration)
 }
 
-export function wait (promise, time = 1000) {
+export function wait (promise, time = 2000) {
   const waitPromise = new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve()
@@ -48,21 +48,4 @@ export function wait (promise, time = 1000) {
   return Promise.all([promise, waitPromise]).then(data => {
     return data[0]
   })
-  // return new Promise((resolve, reject) => {
-  //   promise.then(data => {
-  //     ret = data
-  //     if (isOk) {
-  //       return resolve(data)
-  //     } else {
-  //       isOk = true
-  //     }
-  //   })
-  //   setTimeout(() => {
-  //     if (isOk) {
-  //       return resolve(ret)
-  //     } else {
-  //       isOk = true
-  //     }
-  //   }, time)
-  // })
 }

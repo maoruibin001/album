@@ -1,27 +1,27 @@
 <template>
-    <scroller refreshText="刷新中..." :on-refresh="refresh">
-      <div  style="padding: 0 10px;">
-        <WaterFall @loadmore="loadmore" class="box" @reflowed="reflowed" :fixed-height="true" line="v"  height="95%">
-            <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
-                <div class="item" @click="toLittleClass(item)">
-                    <div class="title">{{item.name}}</div>
-                    <div class="img-box">
-                        <div class="left" :style="{'background-image': `url(${item.children[0].mainImgThumb})`}">
-                            <!-- <img :src="item.children[0].mainImgThumb" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt /> -->
-                        </div>
-                        <div class="right">
-                            <div class="r-item top" :style="{'background-image': `url(${(item.children[1] || item.children[0]).mainImgThumb})`}"></div>
-                            <div class="r-item bottom" :style="{'background-image': `url(${(item.children[2] || item.children[1] || item.children[0]).mainImgThumb})`}"></div>
-                            <!-- <img :src="(item.children[1] || item.children[0]).mainImgThumb" :ref="item.id" style="width: 100%" alt />
-                                <img :src="(item.children[2] || item.children[1] || item.children[0]).mainImgThumb" :ref="item.id" style="width: 100%" alt /> -->
+    <scroller ref="scroller" refreshText="刷新中..." :on-refresh="refresh" :on-infinite="loadmore" height="95%">
+        <div style="padding: 0 10px;">
+            <WaterFall @loadmore="loadmore" class="box" @reflowed="reflowed" :fixed-height="true" line="v" height="95%">
+                <waterfall-slot class="slot-item" v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
+                    <div class="item" @click="toLittleClass(item)">
+                        <div class="title">{{item.name}}</div>
+                        <div class="img-box">
+                            <div class="left" :style="{'background-image': `url(${item.children[0].mainImgThumb})`}">
+                                <!-- <img :src="item.children[0].mainImgThumb" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt /> -->
+                            </div>
+                            <div class="right">
+                                <div class="r-item top" :style="{'background-image': `url(${(item.children[1] || item.children[0]).mainImgThumb})`}"></div>
+                                <div class="r-item bottom" :style="{'background-image': `url(${(item.children[2] || item.children[1] || item.children[0]).mainImgThumb})`}"></div>
+                                <!-- <img :src="(item.children[1] || item.children[0]).mainImgThumb" :ref="item.id" style="width: 100%" alt />
+                                    <img :src="(item.children[2] || item.children[1] || item.children[0]).mainImgThumb" :ref="item.id" style="width: 100%" alt /> -->
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            </waterfall-slot>
-        </WaterFall>
-      </div>
-
+                </waterfall-slot>
+            </WaterFall>
+        </div>
+        <nodata v-if="isEnd"></nodata>
     </scroller>
 </template>
 
@@ -29,17 +29,8 @@
 import WaterFall from '@/components/common/WaterFall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import store from 'store/admin'
-// const items = []
-// for (let i = 0; i < 11; i++) {
-//   items.push({
-//     id: i,
-//     width: 180,
-//     height: 155,
-//     url: `static/test/${i % 5 + 1}.jpg`,
-//     url2: `static/test/${i % 4 + 1}.jpg`,
-//     url3: `static/test/${i % 3 + 2}.jpg`
-//   })
-// }
+import { wait } from '@/utils'
+
 export default {
   components: {
     WaterFall,
@@ -65,6 +56,9 @@ export default {
     },
     pageNo () {
       return store.state.pageNo
+    },
+    isLoading () {
+      return store.state.isLoading
     }
   },
   data () {
@@ -87,25 +81,26 @@ export default {
       // this.itemWidth = $(".slot-item").width();
     },
     refresh (done) {
-      store.dispatch('getProducts', {
-        pId: -1
-      }).then(() => {
+      wait(store.dispatch('getProducts')).then(() => {
         done()
-      }).catch(() => {
+      }).catch(e => {
         done()
       })
     },
     loadmore (done) {
-      // done()
       if (this.isEnd) {
+        this.$refs.scroller.finishInfinite()
         return
       }
-      store.dispatch('getProducts', {
-        pageNo: this.pageNo + 1,
-        pId: -1
-      }).then(() => {
+      if (this.isLoading) {
+        return
+      }
+      store.commit('setIsLoading', true)
+      wait(store.dispatch('getProducts', {
+        pageNo: this.pageNo + 1
+      })).then(() => {
         done()
-      }).catch(() => {
+      }).catch(e => {
         done()
       })
     },
@@ -120,17 +115,7 @@ export default {
       }
     }
   }
-  // loadmore () {
-  //   this.items.push.apply(
-  //     this.items,
-  //     items.map(e => {
-  //       return Object.assign(e, {
-  //         id: e.id + 100
-  //       })
-  //     })
-  //   )
-  // }
-  // }
+
 }
 </script>
 
@@ -178,7 +163,7 @@ export default {
     display: flex;
     flex-direction: column;
     .r-item {
-      flex: 1;
+        flex: 1;
         background-repeat: no-repeat;
         background-size: cover;
     }

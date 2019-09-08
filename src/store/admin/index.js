@@ -73,6 +73,10 @@ const store = new Vuex.Store({
     setProductList (state, list = []) {
       state.productList = list
     },
+    addProductList (state, list = []) {
+      if (list.length === 0) return
+      state.productList = state.productList.concat(list)
+    },
     setProductInfo (state, info = {}) {
       state.productInfo = info
     },
@@ -156,25 +160,24 @@ const store = new Vuex.Store({
     getSomeProducts ({ commit, dispatch }, params) {
       // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(productApi.getSome, params).then(({ data }) => {
-        commit('setProductList', data.products)
+        // commit('setProductList', data.products)
+        commit(params.pageNo === 1 ? 'setProductList' : 'addProductList', data.products)
         afterResponse(commit, data, params)
         // commit('setIsEnd', !!data.isEnd)
         // commit('setPageNo', pageNo)
         // commit('setPageSize', pageSize)
       }).catch(e => {
+        commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
       })
     },
     getProducts ({ commit, dispatch }, params) {
       params = preRequest(params)
-      // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(productApi.getAll, params).then(({ data }) => {
-        commit('setProductList', data.products)
         afterResponse(commit, data, params)
-        // commit('setIsEnd', !!data.isEnd)
-        // commit('setPageNo', pageNo)
-        // commit('setPageSize', pageSize)
+        commit(params.pageNo === 1 ? 'setProductList' : 'addProductList', data.products)
       }).catch(e => {
+        commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
       })
     },
@@ -183,10 +186,8 @@ const store = new Vuex.Store({
       return ajax(productApi.get, params).then(({ data }) => {
         commit('setProductInfo', data)
         afterResponse(commit, data, params)
-        // commit('setIsEnd', !!data.isEnd)
-        // commit('setPageNo', pageNo)
-        // commit('setPageSize', pageSize)
       }).catch(e => {
+        commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
       })
     },
@@ -233,6 +234,7 @@ const store = new Vuex.Store({
         // commit('setPageNo', pageNo)
         // commit('setPageSize', pageSize)
       }).catch(e => {
+        commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
       })
     },
@@ -245,6 +247,7 @@ const store = new Vuex.Store({
         // commit('setPageNo', pageNo)
         // commit('setPageSize', pageSize)
       }).catch(e => {
+        commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
       })
     },
@@ -257,6 +260,7 @@ const store = new Vuex.Store({
         // commit('setPageNo', pageNo)
         // commit('setPageSize', pageSize)
       }).catch(e => {
+        commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
       })
     },
@@ -300,6 +304,7 @@ const store = new Vuex.Store({
         commit('setLseriesList', data.lseries)
         afterResponse(commit, data, params)
       }).catch(e => {
+        commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
       })
     },
@@ -309,6 +314,7 @@ const store = new Vuex.Store({
         commit('setLseriesInfo', data)
         afterResponse(commit, data, params)
       }).catch(e => {
+        commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
       })
     }

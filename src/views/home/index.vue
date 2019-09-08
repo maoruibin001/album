@@ -1,5 +1,5 @@
 <template>
-    <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%">
+    <scroller ref="scroller" refreshText="刷新中..." :on-refresh="refresh" :on-infinite="loadmore" height="95%">
         <div style="padding: 0 10px;">
             <WaterFall @loadmore="loadmore" class="item-box">
                 <waterfall-slot v-for="(item, index) in items" :width="item.width" :height="item.height" :order="index" :key="item.index" move-class="item-move">
@@ -17,6 +17,7 @@
                 </waterfall-slot>
             </WaterFall>
         </div>
+         <nodata v-if="isEnd"></nodata>
     </scroller>
 </template>
 
@@ -24,7 +25,6 @@
 import WaterFall from '@/components/common/WaterFall'
 import Carousel from '@/components/common/Carousel'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
-// import ItemFactory from '@/components/common/js/item-factory'
 import store from 'store/admin'
 import { wait } from '@/utils'
 export default {
@@ -81,23 +81,26 @@ export default {
       this.$router.push('/detail/' + item.id)
     },
     refresh (done) {
-      wait(store.dispatch('getBserieses')).then(() => {
+      wait(store.dispatch('getProducts')).then(() => {
         done()
       }).catch(e => {
         done()
       })
     },
     loadmore (done) {
-      if (this.isEnd || this.isLoading) {
-        done()
+      if (this.isEnd) {
+        this.$refs.scroller.finishInfinite()
+        return
+      }
+      if (this.isLoading) {
         return
       }
       store.commit('setIsLoading', true)
-      store.dispatch('getProducts', {
+      wait(store.dispatch('getProducts', {
         pageNo: this.pageNo + 1
-      }).then(() => {
+      })).then(() => {
         done()
-      }).catch(() => {
+      }).catch(e => {
         done()
       })
     }

@@ -1,5 +1,5 @@
 <template>
-    <scroller refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
+    <scroller ref="scroller" refreshText="刷新中..." :on-refresh="refresh" height="95%" :on-infinite="loadmore">
         <div class="notice-box">
             <div class="item" @click="toDetail(item)" v-for="(item, i) in items" :key="i">
                 <div class="title">
@@ -12,12 +12,14 @@
                 </div>
             </div>
         </div>
+        <nodata v-if="isEnd"></nodata>
     </scroller>
 </template>
 
 <script>
 import { getGapDay } from '@/utils/date'
 import store from 'store/admin'
+import { wait } from '@/utils'
 export default {
   components: {},
   data () {
@@ -42,6 +44,9 @@ export default {
     },
     pageNo () {
       return store.state.pageNo
+    },
+    isLoading () {
+      return store.state.isLoading
     }
   },
   created () {
@@ -56,19 +61,26 @@ export default {
       this.$router.push('/detail/' + item.id)
     },
     refresh (done) {
-      setTimeout(() => {
+      wait(store.dispatch('getProducts')).then(() => {
         done()
-      }, 1500)
+      }).catch(e => {
+        done()
+      })
     },
     loadmore (done) {
       if (this.isEnd) {
+        this.$refs.scroller.finishInfinite()
         return
       }
-      store.dispatch('getProducts', {
+      if (this.isLoading) {
+        return
+      }
+      store.commit('setIsLoading', true)
+      wait(store.dispatch('getProducts', {
         pageNo: this.pageNo + 1
-      }).then(() => {
+      })).then(() => {
         done()
-      }).catch(() => {
+      }).catch(e => {
         done()
       })
     }
