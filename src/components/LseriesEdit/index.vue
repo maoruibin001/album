@@ -64,8 +64,6 @@ export default {
       this.editInfo.mainImgThumb = ''
     },
     updateMain (data) {
-      console.log(JSON.stringify(this.editInfo))
-      console.log('data is: ', data)
       this.editInfo.mainImg = data.url
       this.editInfo.mainImgThumb = data.thumbUrl
     },

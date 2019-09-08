@@ -101,10 +101,7 @@ export default {
     getCurrentHeight (item) {
       if (!item.mainImgList || !item.mainImgList[0]) return
       getImageHeightByWidth((item.mainImgList[0] || {}).thumbUrl, item.width).then(height => {
-        console.log('height: ', item)
         item.height = height
-
-        console.log('item: ', item.height)
       })
     },
     loadmore () {},

@@ -167,7 +167,6 @@ const store = new Vuex.Store({
     },
     getProducts ({ commit, dispatch }, params) {
       params = preRequest(params)
-      console.log('params:', params)
       // const { pageNo = config.PAGENO, pageSize = config.PAGESIZE } = params
       return ajax(productApi.getAll, params).then(({ data }) => {
         commit('setProductList', data.products)

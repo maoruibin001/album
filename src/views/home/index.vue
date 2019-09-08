@@ -88,12 +88,10 @@ export default {
       })
     },
     loadmore (done) {
-      console.log('loadmore')
       if (this.isEnd || this.isLoading) {
         done()
         return
       }
-      console.log('loading')
       store.commit('setIsLoading', true)
       store.dispatch('getProducts', {
         pageNo: this.pageNo + 1

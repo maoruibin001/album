@@ -62,7 +62,6 @@ export default {
         default:
           break
       }
-      console.log()
     }
   }
 }

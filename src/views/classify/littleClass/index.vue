@@ -57,7 +57,6 @@ export default {
     // },
     navList () {
       const info = store.state.bseriesInfo || {}
-      console.log('info', info)
       return info.children
     },
     list () {
