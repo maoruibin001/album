@@ -1,5 +1,8 @@
 <template>
     <div class="wrapper">
+        <div class="back" @click="toLogin()">
+            <a>前往登陆</a>
+        </div>
         <div class="login">
             <div class="title">
                 <h3>添加账号</h3>
@@ -66,8 +69,9 @@ export default {
     }
   },
   methods: {
-    // ...mapActions(['login']),
-    // ...mapMutations(['set_user']),
+    toLogin () {
+      this.$router.push('/login')
+    },
     confirm (model) {
       const checkList = [
         {
@@ -105,6 +109,15 @@ export default {
 
 <style lang="scss" rel="stylesheet/scss" scoped>
 .wrapper {
+    .back {
+        position: absolute;
+        left: 10px;
+        top: 20px;
+        cursor: pointer;
+        &:hover {
+            color: #6e47ca;
+        }
+    }
     .login {
         width: 24rem;
         height: 20rem;

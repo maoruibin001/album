@@ -9,20 +9,23 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    userInfo: {
-      name: 'maoruibin'
-    }
+    userInfo: {},
+    flag: ''
   },
   mutations: {
     setUserInfo (state, info = {}) {
       setItem('token', info.token)
       state.userInfo = info
+    },
+    setFlag (state, flag = '') {
+      state.flag = flag
     }
   },
   actions: {
     addUser ({ commit, dispatch }, params) {
       return ajax(userApi.add, params).then(({ data }) => {
         // commit('setUserInfo', data.info)
+        toast('添加用户成功')
       }).catch(e => {
         toast(e.msg || e.body.msg)
         return Promise.reject(e)
@@ -31,7 +34,7 @@ const store = new Vuex.Store({
     login ({ commit, dispatch }, params) {
       return ajax(userApi.login, params).then(({ data }) => {
         commit('setUserInfo', data)
-        setItem('flag', data.id)
+        commit('setFlag', data.id)
         return data
       }).catch(e => {
         toast(e.msg || e.body.msg)

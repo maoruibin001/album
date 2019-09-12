@@ -8,7 +8,7 @@ import { initPlugin } from './plugins'
 import './module'
 import './filters'
 import store from 'store/admin'
-
+import { getItem, getUrlParams } from '@/utils'
 Vue.config.productionTip = false
 
 Vue.use(VueResource)
@@ -16,15 +16,17 @@ Vue.use(VueResource)
 Vue.http.options.emulateHTTP = false
 
 Vue.http.interceptors.push((request, next) => {
-  let authString = 'Bearer '
-  const token = window.localStorage.getItem('token')
-  const flag = window.localStorage.getItem('flag')
-  authString += token || ' '
-  authString += flag || ' '
+  let authString = 'Bearer'
+  const token = getItem('token') || getUrlParams('token')
+  const flag = getItem('flag') || getUrlParams('flag')
+  authString = token ? authString + ' ' + token : authString + ' '
+  authString = flag ? authString + ' ' + flag : authString + ' '
   request.headers.set('authorization', authString)
+  console.log(authString)
   next((response) => {
     if (response.status === 401) {
-      store.commit('unset_user')
+      store.commit('setUserInfo', {})
+      store.commit('setFlag', '')
       router.go({
         name: 'login'
       })

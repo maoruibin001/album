@@ -98,6 +98,6 @@ export const userApi = {
     method: prefex + '/login'
   },
   add: {
-    method: prefex + '/user/add'
+    method: prefex + '/user'
   }
 }

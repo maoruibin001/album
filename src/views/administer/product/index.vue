@@ -99,7 +99,9 @@ export default {
     }
   },
   methods: {
-    logout () {},
+    logout () {
+      this.$router.push('/login')
+    },
     toAccount () {
       this.$router.push('/account')
     },

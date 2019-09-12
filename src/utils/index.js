@@ -189,3 +189,24 @@ export function setItem (key, data) {
 export function getItem (key) {
   return localStorage.getItem(key)
 }
+
+export function deleteItem (key) {
+  return localStorage.removeItem(key)
+}
+
+export function getUrlParams (key = '') {
+  const search = window.location.search
+  const params = search.slice(1)
+  let paramsList = []
+  if (params) {
+    paramsList = params.split('&')
+  }
+  const paramsObj = {}
+  paramsList.forEach(e => {
+    const item = e.split('=')
+    const key = item[0]
+    const value = item[1]
+    paramsObj[key] = value
+  })
+  return key ? paramsObj[key] : paramsObj
+}
