@@ -9,11 +9,12 @@ import notice from '@/views/notice'
 import user from '@/views/user'
 import detail from '@/views/detail'
 import detailGif from '@/views/detailGif'
-// import upload from '@/components/common/Cropper/cropper-list'
+
 import adminNav from '@/views/administer/nav'
-// import adminBigClass from '@/views/administer/bigClass'
-// import adminlittleClass from '@/views/administer/littleClass'
+
+import adminLogin from '@/views/administer/login'
 import product from '@/views/administer/product'
+import account from '@/views/administer/account'
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location) {
@@ -77,12 +78,17 @@ export default new Router({
         name: 'product',
         component: product
       }
-      // {
-      //   path: '/admin/:id/:seriId',
-      //   name: 'littleClass',
-      //   component: adminlittleClass
-      // }
     ]
+  },
+  {
+    path: '/login',
+    name: 'adminLogin',
+    component: adminLogin
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: account
   }
   ]
 })

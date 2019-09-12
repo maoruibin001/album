@@ -92,3 +92,12 @@ export const imgUploadApi = {
     method: prefex + '/upload/file'
   }
 }
+
+export const userApi = {
+  login: {
+    method: prefex + '/login'
+  },
+  add: {
+    method: prefex + '/user/add'
+  }
+}

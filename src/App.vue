@@ -10,6 +10,7 @@
 import Navbar from '@/components/common/Navbar'
 import Search from '@/components/common/Search'
 import { isPc } from '@/utils'
+import store from '@/store/admin'
 // import "../static/font/iconfont.css";
 export default {
   name: 'App',
@@ -27,6 +28,12 @@ export default {
     notNeedGap () {
       return this.$route.path.indexOf('/admin') !== -1 || this.$route.path.indexOf('/detail') !== -1
     }
+  },
+  created () {
+    const flag = this.$route.query.flag
+    if (!flag) return
+    localStorage.setItem('flag', flag)
+    store.commit('setFlag', flag)
   },
   data () {
     return {

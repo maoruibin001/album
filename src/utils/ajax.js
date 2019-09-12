@@ -14,7 +14,10 @@ export function ajax (params = {}, data) {
       if (data.retCode === 0) {
         return data
       } else {
-        if (data.retCode !== undefined) throw new Error(data)
+        console.log('data', data)
+        if (data.retCode) {
+          return Promise.reject(data)
+        }
         return data
       }
     })
@@ -25,7 +28,9 @@ export function ajax (params = {}, data) {
       if (data.retCode === 0) {
         return data
       } else {
-        if (data.retCode !== undefined) throw new Error(data)
+        if (data.retCode) {
+          return Promise.reject(data)
+        }
         return data
       }
     })

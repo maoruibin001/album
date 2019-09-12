@@ -16,9 +16,12 @@ Vue.use(VueResource)
 Vue.http.options.emulateHTTP = false
 
 Vue.http.interceptors.push((request, next) => {
-  if (window.localStorage.getItem('token')) {
-    request.headers.set('authorization', 'Bearer ' + window.localStorage.getItem('token'))
-  }
+  let authString = 'Bearer '
+  const token = window.localStorage.getItem('token')
+  const flag = window.localStorage.getItem('flag')
+  authString += token || ' '
+  authString += flag || ' '
+  request.headers.set('authorization', authString)
   next((response) => {
     if (response.status === 401) {
       store.commit('unset_user')

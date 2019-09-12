@@ -1,5 +1,15 @@
 <template>
     <div style="height: 100%;position: relative;">
+        <div class="nav">
+            <div class="left">
+                欢迎您：{{userInfo.name}}
+            </div>
+            <div class="right">
+                <div class="nav-item addUser" @click="toAccount()">添加管理员</div>
+                <div class="nav-item logout" @click="logout()">退出</div>
+
+            </div>
+        </div>
         <waterfall :imgsArr="items" :maxCols="4" ref="waterfall" :loadingDotStyle="{}">
             <div class="desc" slot-scope="props">
                 <div class="left" :title="props.value.name">{{props.value.name | ellipsis(6)}}</div>
@@ -18,6 +28,7 @@
 
 <script>
 import store from 'store/admin'
+import userStore from 'store/user'
 import ProductEdit from '@/components/ProductEdit'
 import Confirm from '@/components/common/Confirm'
 
@@ -52,6 +63,9 @@ export default {
       })
       return items
     },
+    userInfo () {
+      return userStore.state.userInfo
+    },
     // productList () {
     //   return store.state.productList
     // },
@@ -85,10 +99,11 @@ export default {
     }
   },
   methods: {
+    logout () {},
+    toAccount () {
+      this.$router.push('/account')
+    },
     getData () {
-      // store.dispatch('getProducts', {
-      //   lId: this.id
-      // })
     },
     getCurrentHeight (item) {
       if (!item.mainImgList || !item.mainImgList[0]) return
@@ -148,39 +163,64 @@ export default {
         width: 100%;
         border-radius: 10px;
     }
-
 }
 
-    .desc {
-        position: absolute;
-        left: 0;
-        bottom: 5px;
-        width: 100%;
-        height: 30px;
-        line-height: 30px;
-        display: flex;
-        flex-direction: row;
-        color: #fff;
-        .left,
-        .right {
-            // width: 20px;
-            text-align: left; // margin-left: 10px;
-            font-size: 12px;
-            flex: 1
+.desc {
+    position: absolute;
+    left: 0;
+    bottom: 5px;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    display: flex;
+    flex-direction: row;
+    color: #fff;
+    .left,
+    .right {
+        // width: 20px;
+        text-align: left; // margin-left: 10px;
+        font-size: 12px;
+        flex: 1
+    }
+    .left {
+        margin-left: 20px;
+    }
+    .right {
+        // display: flex;
+        text-align: right; // flex: 6;
+        flex: 0 0 110px; // width: 120px;
+        margin-right: 10px;
+        div {
+            cursor: pointer;
+            margin-right: 2px;
+            float: right;
         }
-        .left {
-          margin-left: 20px;
-        }
-        .right {
-            // display: flex;
-            text-align: right; // flex: 6;
-            flex: 0 0 110px; // width: 120px;
-            margin-right: 10px;
-            div {
-                cursor: pointer;
-                margin-right: 2px;
-                float: right;
+    }
+}
+
+.nav {
+    background-color: #f0ebeb;
+    display: flex;
+    .left {
+        flex: 1;
+        text-align: left;
+    }
+    .right {
+        flex: 1;
+        text-align: right;
+        .nav-item {
+            display: inline-block;
+            cursor: pointer;
+            &:hover {
+              color: red;
             }
         }
     }
+}
+</style>
+
+<style>
+.over {
+    display: none
+}
 </style>

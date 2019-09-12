@@ -22,6 +22,7 @@ function afterResponse (commit, data, params) {
 }
 const store = new Vuex.Store({
   state: {
+    flag: '',
     pageNo: 1,
     pageSize: config.PAGESIZE,
     isEnd: false,
@@ -61,6 +62,9 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    setFlag (state, flag = '') {
+      state.flag = flag
+    },
     setEditing (state, isEdit = false) {
       state.isEdit = isEdit
     },
