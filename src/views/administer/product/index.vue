@@ -5,7 +5,7 @@
                 欢迎您：{{userInfo.name}}
             </div>
             <div class="right">
-                <div class="nav-item addUser" @click="toAccount()">添加管理员</div>
+                <div class="nav-item addUser" v-if="userInfo.isKeeper" @click="toAccount()">添加管理员</div>
                 <div class="nav-item logout" @click="logout()">退出</div>
 
             </div>
@@ -52,6 +52,9 @@ export default {
     this.$refs.waterfall.waterfallOver()
   },
   computed: {
+    userInfo () {
+      return userStore.state.userInfo
+    },
     items () {
       const items = store.state.productList.map(e => {
         return {
@@ -62,9 +65,6 @@ export default {
         }
       })
       return items
-    },
-    userInfo () {
-      return userStore.state.userInfo
     },
     // productList () {
     //   return store.state.productList
