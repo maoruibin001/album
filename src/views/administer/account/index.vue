@@ -41,13 +41,14 @@
                 <div class="left">是否为管理员：</div>
                 <div class="right keeper">
                     是：<input v-model="model.isKeeper" value="1" type="radio" name="keeper">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
                     否：<input v-model="model.isKeeper" value="0" type="radio" name="keeper">
                 </div>
             </div>
 
             <button class="btn btn-success" @click="confirm(model)">
-                    <span>提交</span>
-                  </button>
+                        <span>提交</span>
+                      </button>
         </div>
     </div>
 </template>
@@ -56,16 +57,24 @@
 // import { mapActions, mapMutations } from 'vuex'
 import store from '@/store/user'
 import { checkParams, toast } from '@/utils'
+const defaultModel = {
+  name: '',
+  account: '',
+  password: '',
+  repassword: '',
+  isKeeper: 0
+}
 export default {
+  mounted () {
+    console.log(this.model)
+  },
   data () {
+    var model = this.$route.query.isModify ? Object.assign({}, store.state.userInfo, {
+      repassword: store.state.userInfo.password
+    }) : defaultModel
     return {
-      model: {
-        name: '',
-        account: '',
-        password: '',
-        repassword: '',
-        isKeeper: 0
-      }
+      isModify: this.$route.query.isModify === 1,
+      model: model
     }
   },
   methods: {
@@ -73,30 +82,29 @@ export default {
       this.$router.push('/login')
     },
     confirm (model) {
-      const checkList = [
-        {
-          key: 'name',
-          value: '用户名不能为空'
-        },
-        {
-          key: 'phone',
-          value: '电话不能为空'
-        },
-        {
-          key: 'password',
-          type: 'string',
-          value: '密码不能为空'
-        }
+      const checkList = [{
+        key: 'name',
+        value: '用户名不能为空'
+      },
+      {
+        key: 'phone',
+        value: '电话不能为空'
+      },
+      {
+        key: 'password',
+        type: 'string',
+        value: '密码不能为空'
+      }
       ]
       const inValidStr = checkParams(model, checkList)
       if (inValidStr) {
         return toast(inValidStr)
       }
-      if (this.model.password !== this.model.repassword) {
+      if (model.password !== model.repassword) {
         return toast('前后密码不一致')
       }
-      const { name, phone, password } = this.model
-      store.dispatch('addUser', { name, phone, password }).then((res) => {
+      //   const { name, phone, password } = this.model
+      store.dispatch(this.isModify ? 'modifyUser' : 'addUser', model).then((res) => {
         // this.info = '正在登录中...'
         // this.set_user(res.data)
         // this.$router.push({ name: 'posts' })
@@ -129,15 +137,14 @@ export default {
             color: darkturquoise;
         }
         .title {
-           justify-content: center;
+            justify-content: center;
             align-items: center;
         }
         .item {
             width: 100%;
             margin: 0 auto;
             position: relative;
-            display: flex;
-            // justify-content: center;
+            display: flex; // justify-content: center;
             align-items: center;
             height: 5rem;
             .left {
@@ -155,14 +162,12 @@ export default {
                 left: 0;
                 transition: 0.5s;
             }
-
             .keeper {
                 display: flex;
                 align-items: center;
-              input {
-                width: 1rem;
-                // display: inline;
-              }
+                input {
+                    width: 1rem; // display: inline;
+                }
             }
         }
         input {

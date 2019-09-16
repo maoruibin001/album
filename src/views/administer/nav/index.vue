@@ -61,11 +61,12 @@
 
 <script>
 import store from 'store/admin'
+import userStore from 'store/user'
 import ProductEdit from '@/components/ProductEdit'
 import BseriesEdit from '@/components/BseriesEdit'
 import LseriesEdit from '@/components/LseriesEdit'
 import Confirm from '@/components/common/Confirm'
-import { toast } from '@/utils'
+import { toast, getItem } from '@/utils'
 
 export default {
   components: {
@@ -91,9 +92,19 @@ export default {
   computed: {
     list () {
       return store.state.bseriesList
+    },
+    flag () {
+      return userStore.state.flag || getItem('flag')
+    },
+    token () {
+      return userStore.state.token || getItem('token')
     }
   },
   created () {
+    console.log(this.flag, this.token)
+    if (!this.flag || !this.token) {
+      this.$router.push('/login')
+    }
     store.dispatch('getBserieses')
   },
   methods: {

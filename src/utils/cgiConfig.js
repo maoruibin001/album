@@ -99,5 +99,17 @@ export const userApi = {
   },
   add: {
     method: prefex + '/user'
+  },
+  put: {
+    method: prefex + '/user',
+    type: 'put'
+  },
+  delete: {
+    method: prefex + '/user',
+    type: 'delete'
+  },
+  get: {
+    method: prefex + '/user',
+    type: 'get'
   }
 }

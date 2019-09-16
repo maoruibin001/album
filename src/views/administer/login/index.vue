@@ -28,9 +28,8 @@
 </template>
 
 <script>
-// import { mapActions, mapMutations } from 'vuex'
+
 import store from '@/store/user'
-import { deleteItem } from '@/utils'
 export default {
   data () {
     return {
@@ -42,8 +41,8 @@ export default {
     }
   },
   beforeCreate () {
-    deleteItem('token')
-    deleteItem('flag')
+    store.commit('setFlag', '')
+    store.commit('setToken', '')
   },
   methods: {
     confirm (model) {

@@ -14,11 +14,15 @@ const store = new Vuex.Store({
   },
   mutations: {
     setUserInfo (state, info = {}) {
-      setItem('token', info.token)
       state.userInfo = info
     },
     setFlag (state, flag = '') {
+      setItem('flag', flag)
       state.flag = flag
+    },
+    setToken (state, token = '') {
+      setItem('token', token)
+      state.token = token
     }
   },
   actions: {
@@ -31,9 +35,19 @@ const store = new Vuex.Store({
         return Promise.reject(e)
       })
     },
+    modifyUser ({ commit, dispatch }, params) {
+      return ajax(userApi.put, params).then(({ data }) => {
+        // commit('setUserInfo', data.info)
+        toast('x修改用户成功')
+      }).catch(e => {
+        toast(e.msg || e.body.msg)
+        return Promise.reject(e)
+      })
+    },
     login ({ commit, dispatch }, params) {
       return ajax(userApi.login, params).then(({ data }) => {
         commit('setUserInfo', data)
+        commit('setToken', data.token)
         commit('setFlag', data.id)
         return data
       }).catch(e => {

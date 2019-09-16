@@ -6,6 +6,7 @@
             </div>
             <div class="right">
                 <div class="nav-item addUser" v-if="userInfo.isKeeper" @click="toAccount()">添加管理员</div>
+                <div class="nav-item addUser" @click="modifyAccount()">修改账号资料</div>
                 <div class="nav-item logout" @click="logout()">退出</div>
 
             </div>
@@ -104,6 +105,14 @@ export default {
     },
     toAccount () {
       this.$router.push('/account')
+    },
+    modifyAccount () {
+      this.$router.push({
+        path: '/account',
+        query: {
+          isModify: 1
+        }
+      })
     },
     getData () {
     },
