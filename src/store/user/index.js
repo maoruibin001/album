@@ -38,6 +38,7 @@ const store = new Vuex.Store({
     modifyUser ({ commit, dispatch }, params) {
       return ajax(userApi.put, params).then(({ data }) => {
         // commit('setUserInfo', data.info)
+        commit('setToken', data.token)
         toast('x修改用户成功')
       }).catch(e => {
         toast(e.msg || e.body.msg)

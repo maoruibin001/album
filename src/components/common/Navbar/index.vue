@@ -154,7 +154,7 @@ export default {
 }
 .icon {
   width: 20px;
-  height: 20px;
+  height: 24px;
   font-size: 20px;
   margin: 0 auto;
 }

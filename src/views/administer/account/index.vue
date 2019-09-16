@@ -5,7 +5,7 @@
         </div>
         <div class="login">
             <div class="title">
-                <h3>添加账号</h3>
+                <h3>{{isModify ? '修改' : '添加'}}账号</h3>
             </div>
             <div class="item">
                 <div class="left">用户名：</div>
@@ -81,7 +81,9 @@ export default {
     toLogin () {
       this.$router.push('/login')
     },
-    confirm (model) {
+    confirm (data = {}) {
+      const model = { ...data }
+      model.isKeeper = +model.isKeeper
       const checkList = [{
         key: 'name',
         value: '用户名不能为空'
