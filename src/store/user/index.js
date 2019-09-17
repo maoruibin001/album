@@ -14,6 +14,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     setUserInfo (state, info = {}) {
+      setItem('userInfo', JSON.stringify(info))
       state.userInfo = info
     },
     setFlag (state, flag = '') {
@@ -39,7 +40,7 @@ const store = new Vuex.Store({
       return ajax(userApi.put, params).then(({ data }) => {
         // commit('setUserInfo', data.info)
         commit('setToken', data.token)
-        toast('x修改用户成功')
+        toast('修改用户成功')
       }).catch(e => {
         toast(e.msg || e.body.msg)
         return Promise.reject(e)

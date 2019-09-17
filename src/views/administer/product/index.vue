@@ -35,7 +35,7 @@ import Confirm from '@/components/common/Confirm'
 
 // import WaterFall from '@/components/common/WaterFall'
 // import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
-import { getImageHeightByWidth } from '@/utils'
+import { getImageHeightByWidth, getItem } from '@/utils'
 export default {
   components: {
     ProductEdit,
@@ -54,7 +54,12 @@ export default {
   },
   computed: {
     userInfo () {
-      return userStore.state.userInfo
+      let info = userStore.state.userInfo || {}
+      if (!info.id) {
+        const localInfo = getItem('userInfo')
+        info = localInfo ? JSON.parse(localInfo) : {}
+      }
+      return info
     },
     items () {
       const items = store.state.productList.map(e => {

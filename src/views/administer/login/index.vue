@@ -43,6 +43,7 @@ export default {
   beforeCreate () {
     store.commit('setFlag', '')
     store.commit('setToken', '')
+    store.commit('setUserInfo', {})
   },
   methods: {
     confirm (model) {

@@ -108,10 +108,10 @@ export default {
       }
       //   const { name, phone, password } = this.model
       store.dispatch(this.isModify ? 'modifyUser' : 'addUser', model).then((res) => {
+        this.$router.push('/login')
         // this.info = '正在登录中...'
         // this.set_user(res.data)
         // this.$router.push({ name: 'posts' })
-
       })
     }
   }
