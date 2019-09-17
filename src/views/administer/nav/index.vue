@@ -224,10 +224,17 @@ ul {
     display: flex;
     width: 100%; // height: 100%;
     // min-height: 400px;
-    background-color: #ccc;
+
     .admin-nav {
-        position: relative;
-        flex: 0 0 250px;
+      background-color: #ccc;
+      overflow:hidden;
+        position: fixed;
+        width: 250px;
+        left: 2px;
+        top: 0px;
+        bottom: 0px;
+
+        // flex: 0 0 250px;
         // width: 250px; // flex: 1; // display: flex;
         flex-direction: column;
         .title {

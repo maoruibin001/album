@@ -37,7 +37,7 @@
                     <i class="iconfont icon-yuechi" />
                 </div>
             </div>
-            <div class="item">
+            <div class="item" v-if="isKeeper">
                 <div class="left">是否为管理员：</div>
                 <div class="right keeper">
                     是：<input v-model="model.isKeeper" value="1" type="radio" name="keeper">
@@ -74,7 +74,8 @@ export default {
     }) : defaultModel
     return {
       isModify: this.$route.query.isModify === 1,
-      model: model
+      model: model,
+      isKeeper: model.isKeeper
     }
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 100%;position: relative;">
+    <div style="" class="product-container" :style="{width: width}">
         <div class="nav">
             <div class="left">
                 欢迎您：{{userInfo.name}}
@@ -89,6 +89,7 @@ export default {
   },
   data () {
     return {
+      width: document.body.clientWidth - 255 + 'px',
       imgsArr: [],
       group: 0, // request param
       productInfo: {},
@@ -114,8 +115,7 @@ export default {
         }
       })
     },
-    getData () {
-    },
+    getData () {},
     getCurrentHeight (item) {
       if (!item.mainImgList || !item.mainImgList[0]) return
       getImageHeightByWidth((item.mainImgList[0] || {}).thumbUrl, item.width).then(height => {
@@ -158,6 +158,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.product-container {
+    height: 100%;
+    position: relative;
+    left: 255px;
+}
+
 .item {
     // width: 200px; // border-radius: 20px;
     // overflow: hidden;
@@ -223,7 +229,7 @@ export default {
             display: inline-block;
             cursor: pointer;
             &:hover {
-              color: red;
+                color: red;
             }
         }
     }
