@@ -6,12 +6,12 @@
                     <div class="item" @click="toLittleClass(item)">
                         <div class="title">{{item.name}}</div>
                         <div class="img-box">
-                            <div class="left" :style="{'background-image': `url(${item.children[0] && item.children[0].mainImgThumb})`}">
+                            <div class="left" :style="{'background-image': `url(${(item.children[0] || {}).mainImgThumb})`}">
                                 <!-- <img :src="item.children[0].mainImgThumb" :ref="item.id" @load="getCurrentHeight(item)" style="width: 100%" alt /> -->
                             </div>
                             <div class="right">
-                                <div class="r-item top" :style="{'background-image': `url(${(item.children[1] || item.children[0]).mainImgThumb})`}"></div>
-                                <div class="r-item bottom" :style="{'background-image': `url(${(item.children[2] || item.children[1] || item.children[0]).mainImgThumb})`}"></div>
+                                <div class="r-item top" :style="{'background-image': `url(${(item.children[1] || item.children[0] || {}).mainImgThumb})`}"></div>
+                                <div class="r-item bottom" :style="{'background-image': `url(${(item.children[2] || item.children[1] || item.children[0] || {}).mainImgThumb})`}"></div>
                                 <!-- <img :src="(item.children[1] || item.children[0]).mainImgThumb" :ref="item.id" style="width: 100%" alt />
                                     <img :src="(item.children[2] || item.children[1] || item.children[0]).mainImgThumb" :ref="item.id" style="width: 100%" alt /> -->
                             </div>
