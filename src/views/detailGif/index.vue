@@ -46,7 +46,7 @@ export default {
   align-items: center;
 }
 .w-100 {
-    width: 100%;
+    width: 97%;
 }
 
 .detail-btns {
