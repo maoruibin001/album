@@ -7,6 +7,7 @@
             <div class="right">
                 <div class="nav-item addUser" v-if="userInfo.isKeeper" @click="toAccount()">添加管理员</div>
                 <div class="nav-item addUser" @click="modifyAccount()">修改账号资料</div>
+                <div class="nav-item addUser" @click="getLink()">获取客户端链接</div>
                 <div class="nav-item logout" @click="logout()">退出</div>
 
             </div>
@@ -72,9 +73,9 @@ export default {
       })
       return items
     },
-    // productList () {
-    //   return store.state.productList
-    // },
+    flag () {
+      return userStore.state.flag || getItem('flag')
+    },
     id () {
       return +this.$route.params.id
     }
@@ -106,6 +107,11 @@ export default {
     }
   },
   methods: {
+    getLink () {
+      this.showConfirm = true
+      this.title = '客户端链接'
+      this.confirmContent = location.protocol + '//' + location.host + '/?' + this.flag
+    },
     logout () {
       this.$router.push('/login')
     },

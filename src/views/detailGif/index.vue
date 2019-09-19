@@ -3,21 +3,11 @@
         <div class="detail-img">
             <img :src="productInfo.gifImg" class="w-100" alt="">
         </div>
-        <!-- <div class="detail-btns">
-            <div class="btn left" @click="show3d=true">
-                产品3维展示
-            </div>
-            <div class="btn right">
-                购买方案原型
-            </div>
-        </div> -->
-
-        <!-- <ImgDialog :url='productInfo.gifImg' v-if="show3d" @close="show3d=false"></ImgDialog> -->
     </div>
 </template>
 
 <script>
-// import ImgDialog from '@/components/common/ImgDialog'
+
 import store from 'store/admin'
 export default {
   components: {
@@ -45,6 +35,16 @@ export default {
 </script>
 
 <style scoped>
+.detail-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .w-100 {
     width: 100%;
 }
