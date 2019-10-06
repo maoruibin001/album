@@ -7,8 +7,8 @@
                     <div class="text">{{item.name}}</div>
                     <div class="date">{{item.modifyDate | getGapDay}}</div>
                 </div>
-                <div class="content">
-                    <img :src="item.mainImgList[0].url" :ref="item.id" style="width: 100%;max-width: 600px;" alt />
+                <div class="content" :style="{backgroundImage: `url(${item.mainImgList[0].url})`}">
+                    <!-- <img :src="item.mainImgList[0].url" :ref="item.id" alt /> -->
                 </div>
             </div>
         </div>
@@ -130,5 +130,9 @@ export default {
     margin-left: 28px;
     margin-top: 9px;
     display: flex;
+    height: 200px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: cover
 }
 </style>

@@ -74,7 +74,6 @@ export default {
           e.height = item.height
         }
       })
-      // debugger
     },
     toDetail (item) {
       if (!item.id) return

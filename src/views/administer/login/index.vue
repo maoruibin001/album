@@ -49,8 +49,6 @@ export default {
     confirm (model) {
       const { phone, password } = model
       store.dispatch('login', { phone, password }).then((res) => {
-        console.log(34444)
-        debugger
         this.$router.push({
           path: '/admin',
           query: {
