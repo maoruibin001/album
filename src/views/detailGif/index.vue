@@ -23,6 +23,8 @@ export default {
   created () {
     store.dispatch('getProduct', {
       id: this.id
+    }).then(ret => {
+      document.title = ret.name
     })
   },
   computed: {
@@ -37,6 +39,7 @@ export default {
 <style scoped>
 .detail-box {
   position: fixed;
+  background-color: #000;
   top: 0;
   left: 0;
   bottom: 0;

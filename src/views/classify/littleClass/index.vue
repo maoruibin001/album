@@ -71,6 +71,8 @@ export default {
     store.dispatch('getBseries', {
       bId: this.id,
       pageSize: 100
+    }).then(ret => {
+      document.title = ret.name || '分类'
     })
     store.dispatch('getProducts', {
       bId: this.id

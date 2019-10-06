@@ -180,6 +180,7 @@ const store = new Vuex.Store({
       return ajax(productApi.getAll, params).then(({ data }) => {
         afterResponse(commit, data, params)
         commit(params.pageNo === 1 ? 'setProductList' : 'addProductList', data.products)
+        return data
       }).catch(e => {
         commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
@@ -190,6 +191,7 @@ const store = new Vuex.Store({
       return ajax(productApi.get, params).then(({ data }) => {
         commit('setProductInfo', data)
         afterResponse(commit, data, params)
+        return data
       }).catch(e => {
         commit('setIsLoading', false)
         toast(e.msg || e.body.msg)
@@ -260,6 +262,7 @@ const store = new Vuex.Store({
       return ajax(bSeriesApi.get, params).then(({ data }) => {
         commit('setBseriesInfo', data)
         afterResponse(commit, data, params)
+        return data
         // commit('setIsEnd', !!data.isEnd)
         // commit('setPageNo', pageNo)
         // commit('setPageSize', pageSize)

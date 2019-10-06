@@ -33,6 +33,8 @@ export default {
   created () {
     store.dispatch('getProduct', {
       id: this.id
+    }).then(ret => {
+      document.title = ret.name
     })
   },
   computed: {
