@@ -87,7 +87,9 @@ export default {
   methods: {
     chooseItem (item, isDisable) {
       if (!item) return
-      document.title = item.text
+      this.$nextTick(() => {
+        document.title = item.text
+      })
       this.navList.forEach(e => {
         e.isActive = e.id === item.id
       })
