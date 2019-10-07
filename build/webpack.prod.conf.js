@@ -115,6 +115,13 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../1puH678wQg.txt'),
+        to: config.build.assetsSubDirectory2,
+        ignore: ['.*']
+      }
     ])
   ]
 })
