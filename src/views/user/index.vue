@@ -38,17 +38,23 @@
 </template>
 
 <script>
+import store from 'store/admin'
 export default {
+  computed: {
+    user () {
+      return store.state.userInfo
+    }
+  },
   data () {
     return {
-      user: {
-        name: '毛瑞彬',
-        icon: 'static/test/1.jpg',
-        qrImg: 'static/test/2.jpg',
-        score: 100,
-        vipFee: 99,
-        singFee: 9
-      }
+    //   user: {
+    //     name: '毛瑞彬',
+    //     icon: 'static/test/1.jpg',
+    //     qrImg: 'static/test/2.jpg',
+    //     score: 100,
+    //     vipFee: 99,
+    //     singFee: 9
+    //   }
     }
   }
 

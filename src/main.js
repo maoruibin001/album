@@ -15,6 +15,16 @@ Vue.use(VueResource)
 
 Vue.http.options.emulateHTTP = false
 
+const code = getUrlParams('code')
+const uid = getItem('uid')
+if (!uid && !code) {
+  store.dispath('wxLogin')
+} else if (code) {
+  store.dispatch('getUserInfo', { code })
+} else {
+  store.dispatch('getUserInfo', { uid })
+}
+
 Vue.http.interceptors.push((request, next) => {
   let authString = 'Bearer'
   const token = getItem('token') || getUrlParams('token')

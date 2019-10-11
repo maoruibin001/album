@@ -50,7 +50,9 @@ export default {
     }
   },
   created () {
-    store.dispatch('getProducts', {})
+    store.dispatch('getProducts', {
+      sort: '-modifydate'
+    })
   },
   filters: {
     getGapDay
@@ -61,7 +63,9 @@ export default {
       this.$router.push('/detail/' + item.id)
     },
     refresh (done) {
-      wait(store.dispatch('getProducts')).then(() => {
+      wait(store.dispatch('getProducts', {
+        sort: '-modifydate'
+      })).then(() => {
         done()
       }).catch(e => {
         done()

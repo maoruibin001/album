@@ -2,9 +2,11 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
 import { ajax } from '@/utils/ajax'
-import { productApi, bSeriesApi, lSeriesApi } from '@/utils/cgiConfig'
-import { toast } from '@/utils'
+import { productApi, bSeriesApi, lSeriesApi, accountApi } from '@/utils/cgiConfig'
+import { toast, setItem, removeItem } from '@/utils'
 import config from '@/utils/config'
+
+// import axios from 'axios'
 Vue.use(Vuex)
 
 function preRequest (params) {
@@ -22,6 +24,7 @@ function afterResponse (commit, data, params) {
 }
 const store = new Vuex.Store({
   state: {
+    userInfo: {},
     flag: '',
     pageNo: 1,
     pageSize: config.PAGESIZE,
@@ -126,9 +129,57 @@ const store = new Vuex.Store({
     },
     setIsLoading (state, isLoading = false) {
       state.isLoading = isLoading
+    },
+    setUserInfo (state, info = {}) {
+      state.userInfo = info
     }
   },
   actions: {
+    wxLogin () {
+      const url = `https://open.weixin.qq.com/connect/oauth2/authorize?
+                  appid=${config.APPID}&
+                  redirect_uri=${encodeURIComponent(location.href)}&
+                  response_type=code&
+                  scope=snsapi_userinfo#wechat_redirect`
+      location.href = url
+    },
+    getUserInfo ({ commit, dispatch }, params) {
+      const { code, uid } = params
+      const _sendParams = {}
+      if (code) {
+        _sendParams.code = code
+        // _sendParams.appId = config.APPID,
+        // _sendParams.
+      } else if (uid) {
+        _sendParams.uid = uid
+      }
+      return ajax(accountApi.getUserInfo, params).then(ret => {
+        commit('setUserInfo', ret)
+        setItem('uid', ret.uid)
+        toast('删除产品成功')
+      }).catch(e => {
+        // 用户已存在
+        if (e.code === 11001) {
+          removeItem('uid')
+          dispatch('wxLogin')
+        }
+        toast(e.msg || e.body.msg)
+      })
+    },
+    // getAccessToken () {
+    //   return axios.get(wxApi.getAccessToken.method, {
+    //     params: {
+    //       grant_type: config.GRANTTYPE,
+    //       appid: config.APPID,
+    //       secret: config.SECRET
+    //     }
+    //   }).then(ret => {
+    //     debugger
+    //     toast('删除产品成功')
+    //   }).catch(e => {
+    //     toast(e.msg || e.body.msg)
+    //   })
+    // },
     deleteProduct ({ commit, dispatch }, params) {
       return ajax(productApi.delete, params).then(ret => {
         dispatch('getProducts', params)
