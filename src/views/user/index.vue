@@ -2,7 +2,7 @@
     <div class="user-info">
         <div class="name-box">
             <div class="user-name">{{user.name}}</div>
-            <div class="user-icon"><img :src="user.icon" class="width-100" alt=""></div>
+            <div class="user-icon"><img :src="user.headImgUrl" class="width-100" alt=""></div>
         </div>
         <div class="content">
             <div class="item">
@@ -47,14 +47,6 @@ export default {
   },
   data () {
     return {
-    //   user: {
-    //     name: '毛瑞彬',
-    //     icon: 'static/test/1.jpg',
-    //     qrImg: 'static/test/2.jpg',
-    //     score: 100,
-    //     vipFee: 99,
-    //     singFee: 9
-    //   }
     }
   }
 

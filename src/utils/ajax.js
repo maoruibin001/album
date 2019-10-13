@@ -15,6 +15,10 @@ export function ajax (params = {}, data) {
         return data
       } else {
         console.log('data', data)
+        const info = data.data
+        if (info && info.errorMsg) {
+          data.msg = info.errorMsg
+        }
         if (data.retCode) {
           return Promise.reject(data)
         }

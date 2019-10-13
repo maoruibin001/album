@@ -9,7 +9,7 @@
 <script>
 import Navbar from '@/components/common/Navbar'
 import Search from '@/components/common/Search'
-import { isPc } from '@/utils'
+import { isPc, getItem, getUrlParams } from '@/utils'
 import store from '@/store/admin'
 // import "../static/font/iconfont.css";
 export default {
@@ -31,6 +31,7 @@ export default {
   },
   created () {
     const flag = this.$route.query.flag
+    this.userLogin()
     if (!flag) return
     localStorage.setItem('flag', flag)
     store.commit('setFlag', flag)
@@ -38,6 +39,25 @@ export default {
   data () {
     return {
       isPc: isPc()
+    }
+  },
+  methods: {
+    userLogin () {
+      const code = getUrlParams('code')
+      const uid = getItem('uid')
+      if (uid) {
+        store.dispatch('getUserInfo', { uid })
+      } else {
+        var ua = navigator.userAgent.toLowerCase()
+        var isWeixin = ua.indexOf('micromessenger') !== -1
+        if (getUrlParams('needLogin') || isWeixin) {
+          if (!code) {
+            store.dispatch('wxLogin')
+          } else {
+            store.dispatch('getUserInfo', { code })
+          }
+        }
+      }
     }
   }
 }

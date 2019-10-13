@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     list () {
-      const items = store.state.productList.map(e => {
+      const items = store.state.colections.map(e => {
         return {
           ...e,
           width: 130,
@@ -58,8 +58,7 @@ export default {
     }
   },
   created () {
-    store.dispatch('getProducts', {
-    })
+    store.dispatch('getCollects')
   },
   methods: {
     toDetail (item) {

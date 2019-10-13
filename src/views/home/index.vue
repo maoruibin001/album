@@ -10,7 +10,9 @@
                         <div class="left">
                             {{item.name}}
                         </div>
-                        <div class="right">
+                        <div class="right" @click="item.showPannel=!item.showPannel">
+                          <LittlePannel :isShow="item.showPannel" @tabCollection="tabCollection" :id="item.id" :isCollection="item.isCollection"></LittlePannel>
+                          <!-- <img src="../../assets/icon-collect.png" alt=""> -->
                             ...&nbsp;
                         </div>
                     </div>
@@ -23,6 +25,7 @@
 
 <script>
 import WaterFall from '@/components/common/WaterFall'
+import LittlePannel from '@/components/common/littlePannel'
 import Carousel from '@/components/common/Carousel'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import store from 'store/admin'
@@ -31,7 +34,8 @@ export default {
   components: {
     WaterFall,
     WaterfallSlot,
-    Carousel
+    Carousel,
+    LittlePannel
   },
   created () {
     store.dispatch('getProducts')
@@ -42,7 +46,8 @@ export default {
         return {
           ...e,
           width: 130,
-          height: 140
+          height: 140,
+          showPannel: false
         }
       })
       return items
@@ -64,10 +69,17 @@ export default {
   },
   data () {
     return {
+      showPannel: false,
       items: this.list
     }
   },
   methods: {
+    tabCollection (id) {
+      const item = this.list.find(e => e.id === id)
+      store.dispatch('collect', item).then(() => {
+        item.isCollection = item.isCollection === 1 ? 0 : 1
+      })
+    },
     itemChange (item) {
       this.items.forEach(e => {
         if (e.id === item.id) {
@@ -145,5 +157,6 @@ export default {
     font-size: 24px;
     font-weight: bolder;
     line-height: 8px;
+    position: relative
 }
 </style>

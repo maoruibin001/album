@@ -2,9 +2,10 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
 import { ajax } from '@/utils/ajax'
-import { productApi, bSeriesApi, lSeriesApi, accountApi } from '@/utils/cgiConfig'
+import { productApi, bSeriesApi, lSeriesApi, accountApi, collectionApi } from '@/utils/cgiConfig'
 import { toast, setItem, removeItem } from '@/utils'
 import config from '@/utils/config'
+import { getItem } from '../../utils'
 
 // import axios from 'axios'
 Vue.use(Vuex)
@@ -62,7 +63,8 @@ const store = new Vuex.Store({
       mainImg: '',
       mainImgThumb: '',
       bId: 0
-    }
+    },
+    colections: []
   },
   mutations: {
     setFlag (state, flag = '') {
@@ -132,33 +134,70 @@ const store = new Vuex.Store({
     },
     setUserInfo (state, info = {}) {
       state.userInfo = info
+    },
+    setColections (state, list = []) {
+      state.colections = list
     }
   },
   actions: {
+    getCollects ({ commit, state, dispatch }, id) {
+      const uid = id || state.userInfo.uid || getItem('uid')
+      if (!uid) {
+        return dispatch('wxLogin')
+      }
+      return ajax(collectionApi.getAll, { id, uid }).then(({ data = {} }) => {
+        commit('setColections', data.products)
+        return data
+      }).catch(e => {
+        toast(e.msg || e.body.msg)
+      })
+    },
+    collect ({ commit, state, dispatch }, item) {
+      const { id } = item
+      if (!id) return
+      const uid = state.userInfo.uid || getItem('uid')
+      if (!uid) {
+        return dispatch('wxLogin')
+      }
+
+      return ajax(item.isCollection === 1 ? collectionApi.deleteCollection : collectionApi.add, { id, uid }).then(({ data = {} }) => {
+        toast(item.isCollection === 1 ? '取消收藏成功' : '收藏商品成功')
+        // dispatch('getProducts')
+        return data
+      }).catch(e => {
+        toast(e.msg || e.body.msg)
+      })
+    },
+    cancelCollect ({ commit, state, dispatch }, item) {
+      const { id } = item
+      if (!id) return
+      const uid = state.userInfo.uid || getItem('uid')
+      if (!uid) {
+        return dispatch('wxLogin')
+      }
+      return ajax(collectionApi.deleteCollection, { id, uid }).then(({ data = {} }) => {
+        toast('取消收藏成功')
+        return data
+      }).catch(e => {
+        toast(e.msg || e.body.msg)
+      })
+    },
     wxLogin () {
-      const url = `https://open.weixin.qq.com/connect/oauth2/authorize?
-                  appid=${config.APPID}&
-                  redirect_uri=${encodeURIComponent(location.href)}&
-                  response_type=code&
-                  scope=snsapi_userinfo#wechat_redirect`
+      const url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.APPID}&redirect_uri=${encodeURIComponent(location.href)}&response_type=code&scope=snsapi_userinfo#wechat_redirect`
       location.href = url
     },
     getUserInfo ({ commit, dispatch }, params) {
-      const { code, uid } = params
-      const _sendParams = {}
-      if (code) {
-        _sendParams.code = code
-        // _sendParams.appId = config.APPID,
-        // _sendParams.
-      } else if (uid) {
-        _sendParams.uid = uid
-      }
-      return ajax(accountApi.getUserInfo, params).then(ret => {
-        commit('setUserInfo', ret)
-        setItem('uid', ret.uid)
-        toast('删除产品成功')
+      const { code = '', uid = 0 } = params
+      return ajax(accountApi.getUserInfo, { code, uid }).then(({ data = {} }) => {
+        const info = data || {}
+        commit('setUserInfo', info)
+        if (info.uid) {
+          setItem('uid', info.uid)
+        } else {
+          // removeItem('uid')
+        }
+        return info
       }).catch(e => {
-        // 用户已存在
         if (e.code === 11001) {
           removeItem('uid')
           dispatch('wxLogin')
@@ -166,20 +205,6 @@ const store = new Vuex.Store({
         toast(e.msg || e.body.msg)
       })
     },
-    // getAccessToken () {
-    //   return axios.get(wxApi.getAccessToken.method, {
-    //     params: {
-    //       grant_type: config.GRANTTYPE,
-    //       appid: config.APPID,
-    //       secret: config.SECRET
-    //     }
-    //   }).then(ret => {
-    //     debugger
-    //     toast('删除产品成功')
-    //   }).catch(e => {
-    //     toast(e.msg || e.body.msg)
-    //   })
-    // },
     deleteProduct ({ commit, dispatch }, params) {
       return ajax(productApi.delete, params).then(ret => {
         dispatch('getProducts', params)
@@ -226,8 +251,9 @@ const store = new Vuex.Store({
         toast(e.msg || e.body.msg)
       })
     },
-    getProducts ({ commit, dispatch }, params) {
+    getProducts ({ commit, dispatch, state }, params) {
       params = preRequest(params)
+      params.uid = state.userInfo.uid || getItem('uid')
       return ajax(productApi.getAll, params).then(({ data }) => {
         afterResponse(commit, data, params)
         commit(params.pageNo === 1 ? 'setProductList' : 'addProductList', data.products)

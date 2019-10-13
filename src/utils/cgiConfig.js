@@ -119,26 +119,17 @@ export const accountApi = {
     method: prefex + '/userInfo',
     type: 'get'
   }
-  // add: {
-  //   method: prefex + '/user'
-  // },
-  // put: {
-  //   method: prefex + '/user',
-  //   type: 'put'
-  // },
-  // delete: {
-  //   method: prefex + '/user',
-  //   type: 'delete'
-  // },
-  // get: {
-  //   method: prefex + '/user',
-  //   type: 'get'
-  // }
 }
 
-// export const wxApi = {
-//   getAccessToken: {
-//     method: 'https://api.weixin.qq.com/cgi-bin/token',
-//     type: 'get'
-//   }
-// }
+export const collectionApi = {
+  add: {
+    method: prefex + '/collection'
+  },
+  deleteCollection: {
+    method: prefex + '/deleteCollection'
+  },
+  getAll: {
+    method: prefex + '/collections',
+    type: 'get'
+  }
+}
