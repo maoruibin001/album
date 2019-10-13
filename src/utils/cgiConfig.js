@@ -133,3 +133,21 @@ export const collectionApi = {
     type: 'get'
   }
 }
+
+export const littleProgramApi = {
+  add: {
+    method: prefex + '/program'
+  },
+  put: {
+    method: prefex + '/program',
+    type: 'put'
+  },
+  delete: {
+    method: prefex + '/program',
+    type: 'delete'
+  },
+  get: {
+    method: prefex + '/program',
+    type: 'get'
+  }
+}

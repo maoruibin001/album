@@ -4,6 +4,7 @@
             <div style="width:300px;display:flex;">
               {{content}}
             </div>
+            <slot></slot>
           </template>
           <template v-slot:footer>
             <button class="btn" @click="close">取消</button>

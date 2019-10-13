@@ -3,7 +3,7 @@
     <ul class="item-box">
       <li class="item" >
         <span @click.stop="tabCollection">{{isCollection ? "已收藏" : '收藏'}}</span></li>
-      <li class="item" @click.stop="share">分享</li>
+      <!-- <li class="item" @click.stop="share">分享</li> -->
     </ul>
   </div>
 </template>
@@ -40,13 +40,14 @@ export default {
 <style scoped lang="scss">
 .little-pannel {
     width: 100px;
-    min-height: 40px;
-    background-color: #fafafa;
+    min-height: 20px;
+    background-color: #cecece;
     position: absolute;
-    right: 0;
-    top: 20px;
+
+      right: 33px;
+      top: -6px;
     z-index: 2;
-    box-shadow: 20px 10px 10px rgba(0,0,0, .3);
+    box-shadow: 5px 5px 5px rgba(0,0,0, .3);
 
     .item {
       padding: 0;

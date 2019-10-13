@@ -8,6 +8,7 @@
                 <div class="nav-item addUser" v-if="userInfo.isKeeper" @click="toAccount()">添加管理员</div>
                 <div class="nav-item addUser" @click="modifyAccount()">修改账号资料</div>
                 <div class="nav-item addUser" @click="getLink()">获取客户端链接</div>
+                <div class="nav-item addUser" @click="bandLittleProgram()">绑定小程序</div>
                 <div class="nav-item logout" @click="logout()">退出</div>
 
             </div>
@@ -25,6 +26,11 @@
         </waterfall>
         <ProductEdit :show="showDialog" :pId="productInfo.pId"></ProductEdit>
         <Confirm :show="showConfirm" :title="title" @close="showConfirm=false" @ok="sure" :content="confirmContent"></Confirm>
+        <Confirm :show="showLittleConfirm" :title="title" @close="showLittleConfirm=false" @ok="bind">
+          <div style="text-align: left;">
+            小程序appid: <input type="text" placeholder="请输入小程序appid" v-model="appid">
+          </div>
+        </Confirm>
     </div>
 </template>
 
@@ -95,6 +101,8 @@ export default {
   },
   data () {
     return {
+      appid: '',
+      showLittleConfirm: false,
       width: document.body.clientWidth - 255 + 'px',
       imgsArr: [],
       group: 0, // request param
@@ -107,10 +115,22 @@ export default {
     }
   },
   methods: {
+    bind () {
+      store.dispatch('bindLittleProgram', {
+        appid: this.appid
+      }).then(() => {
+        this.showConfirm = false
+      })
+    },
     getLink () {
       this.showConfirm = true
       this.title = '客户端链接'
       this.confirmContent = location.protocol + '//' + location.host + '/?' + this.flag
+    },
+    bandLittleProgram () {
+      this.showLittleConfirm = true
+      this.title = '绑定小程序'
+      this.confirmContent = ''
     },
     logout () {
       this.$router.push('/login')

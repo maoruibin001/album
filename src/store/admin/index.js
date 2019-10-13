@@ -2,7 +2,7 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
 import { ajax } from '@/utils/ajax'
-import { productApi, bSeriesApi, lSeriesApi, accountApi, collectionApi } from '@/utils/cgiConfig'
+import { productApi, bSeriesApi, lSeriesApi, accountApi, collectionApi, littleProgramApi } from '@/utils/cgiConfig'
 import { toast, setItem, removeItem } from '@/utils'
 import config from '@/utils/config'
 import { getItem } from '../../utils'
@@ -140,6 +140,20 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    bindLittleProgram ({ commit, state, dispatch }, data = {}) {
+      const { appid } = data
+      const flag = state.flag
+      const id = state.userInfo.id
+
+      if (appid && flag && id) {
+        return ajax(littleProgramApi.add, { id, appid, flag }).then(({ data = {} }) => {
+          toast('绑定小程序成功')
+          return data
+        }).catch(e => {
+          toast(e.msg || e.body.msg)
+        })
+      }
+    },
     getCollects ({ commit, state, dispatch }, id) {
       const uid = id || state.userInfo.uid || getItem('uid')
       if (!uid) {
