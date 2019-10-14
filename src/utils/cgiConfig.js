@@ -136,18 +136,18 @@ export const collectionApi = {
 
 export const littleProgramApi = {
   add: {
-    method: prefex + '/program'
+    method: prefex + '/littleProgram'
   },
   put: {
-    method: prefex + '/program',
+    method: prefex + '/littleProgram/:id',
     type: 'put'
   },
   delete: {
-    method: prefex + '/program',
+    method: prefex + '/littleProgram',
     type: 'delete'
   },
   get: {
-    method: prefex + '/program',
+    method: prefex + '/littleProgram',
     type: 'get'
   }
 }

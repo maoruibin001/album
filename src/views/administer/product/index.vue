@@ -8,7 +8,7 @@
                 <div class="nav-item addUser" v-if="userInfo.isKeeper" @click="toAccount()">添加管理员</div>
                 <div class="nav-item addUser" @click="modifyAccount()">修改账号资料</div>
                 <div class="nav-item addUser" @click="getLink()">获取客户端链接</div>
-                <div class="nav-item addUser" @click="bandLittleProgram()">绑定小程序</div>
+                <div class="nav-item addUser" @click="bandLittleProgram()">{{littleProgramInfo.appid ? '已绑定小程序' : '绑定小程序'}}</div>
                 <div class="nav-item logout" @click="logout()">退出</div>
 
             </div>
@@ -27,8 +27,11 @@
         <ProductEdit :show="showDialog" :pId="productInfo.pId"></ProductEdit>
         <Confirm :show="showConfirm" :title="title" @close="showConfirm=false" @ok="sure" :content="confirmContent"></Confirm>
         <Confirm :show="showLittleConfirm" :title="title" @close="showLittleConfirm=false" @ok="bind">
-          <div style="text-align: left;">
-            小程序appid: <input type="text" placeholder="请输入小程序appid" v-model="appid">
+          <div style="text-align: left;margin-bottom: 10px;">
+            小程序appid: &nbsp;<input type="text" placeholder="请输入小程序appid" v-model="appid">
+          </div>
+          <div style="text-align: left;" v-if="littleProgramInfo.appid">
+            小程序版本号: <input type="text" placeholder="请输入小程序版本号" v-model="version">
           </div>
         </Confirm>
     </div>
@@ -55,11 +58,16 @@ export default {
       lId: this.id,
       pageSize: 1000
     })
+    store.dispatch('getBindLitteProgram')
   },
   mounted () {
     this.$refs.waterfall.waterfallOver()
   },
   computed: {
+    littleProgramInfo () {
+      const info = store.state.littleProgramInfo
+      return info
+    },
     userInfo () {
       let info = userStore.state.userInfo || {}
       if (!info.id) {
@@ -87,6 +95,12 @@ export default {
     }
   },
   watch: {
+    littleProgramInfo (val) {
+      if (val && val.appid) {
+        this.appid = val.appid
+        this.version = val.version
+      }
+    },
     id (val) {
       store.dispatch('getProducts', {
         lId: this.id
@@ -101,6 +115,7 @@ export default {
   },
   data () {
     return {
+      version: 0,
       appid: '',
       showLittleConfirm: false,
       width: document.body.clientWidth - 255 + 'px',
@@ -117,7 +132,8 @@ export default {
   methods: {
     bind () {
       store.dispatch('bindLittleProgram', {
-        appid: this.appid
+        appid: this.appid,
+        version: +this.version
       }).then(() => {
         this.showConfirm = false
       })
@@ -129,7 +145,7 @@ export default {
     },
     bandLittleProgram () {
       this.showLittleConfirm = true
-      this.title = '绑定小程序'
+      this.title = this.littleProgramInfo.appid ? '修改小程序信息' : '绑定小程序'
       this.confirmContent = ''
     },
     logout () {

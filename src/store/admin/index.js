@@ -6,6 +6,7 @@ import { productApi, bSeriesApi, lSeriesApi, accountApi, collectionApi, littlePr
 import { toast, setItem, removeItem } from '@/utils'
 import config from '@/utils/config'
 import { getItem } from '../../utils'
+import userStore from '../user'
 
 // import axios from 'axios'
 Vue.use(Vuex)
@@ -64,9 +65,13 @@ const store = new Vuex.Store({
       mainImgThumb: '',
       bId: 0
     },
-    colections: []
+    colections: [],
+    littleProgramInfo: {}
   },
   mutations: {
+    setLittleProgramInfo (state, info = {}) {
+      state.littleProgramInfo = info
+    },
     setFlag (state, flag = '') {
       state.flag = flag
     },
@@ -140,14 +145,31 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    getBindLitteProgram ({ commit, state, dispatch }) {
+      const flag = +state.flag || 0
+      const localInfo = getItem('userInfo')
+      const userInfo = localInfo ? JSON.parse(localInfo) : {}
+      const uid = userStore.state.userInfo.id || userInfo.id || 0
+      if (flag || uid) {
+        return ajax(littleProgramApi.get, { uid, flag }).then(({ data = {} }) => {
+          commit('setLittleProgramInfo', data)
+          return data
+        }).catch(e => {
+          // toast(e.msg || e.body.msg)
+        })
+      }
+    },
     bindLittleProgram ({ commit, state, dispatch }, data = {}) {
-      const { appid } = data
-      const flag = state.flag
-      const id = state.userInfo.id
-
-      if (appid && flag && id) {
-        return ajax(littleProgramApi.add, { id, appid, flag }).then(({ data = {} }) => {
-          toast('绑定小程序成功')
+      const { appid, version } = data
+      const flag = +state.flag
+      const localInfo = getItem('userInfo')
+      const userInfo = localInfo ? JSON.parse(localInfo) : {}
+      const uid = userStore.state.userInfo.id || userInfo.id || 0
+      const id = state.littleProgramInfo.id
+      if (appid && flag && uid) {
+        return ajax(id ? littleProgramApi.put : littleProgramApi.add, { id, uid, appid, flag, version }).then(({ data = {} }) => {
+          toast(id ? '更新绑定小程序成功' : '绑定小程序成功')
+          commit('getBindLitteProgram')
           return data
         }).catch(e => {
           toast(e.msg || e.body.msg)
