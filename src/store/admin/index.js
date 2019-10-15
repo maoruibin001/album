@@ -234,11 +234,8 @@ const store = new Vuex.Store({
         }
         return info
       }).catch(e => {
-        if (e.code === 11001) {
-          removeItem('uid')
-          dispatch('wxLogin')
-        }
-        toast(e.msg || e.body.msg)
+        removeItem('uid')
+        dispatch('wxLogin')
       })
     },
     deleteProduct ({ commit, dispatch }, params) {
